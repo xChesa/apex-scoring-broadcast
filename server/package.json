@@ -1,0 +1,16 @@
+{
+  "name": "apex-broadcast-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Double0negative",
+  "license": "ISC",
+  "dependencies": {
+    "apex-scoring": "git+https://github.com/superleaguegaming/apex-scoring.git",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
