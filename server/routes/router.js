@@ -4,11 +4,6 @@ const _ = require("lodash");
 
 module.exports = function router(app) {
 
-    app.get("/", (req, res) => {
-        res.send("HELLO WORLD");
-    })
-
-
     app.get("/mock", (req, res) => {
         res.json(mockStats)
     })

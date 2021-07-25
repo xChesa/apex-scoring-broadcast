@@ -49,6 +49,6 @@ export default {
     width: 100%;
     height: 100%;
     position: absolute;
-    background-image: url("/scoring.png");
+    /* background-image: url("/scoring.png"); */
 }
 </style>

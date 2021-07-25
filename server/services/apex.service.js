@@ -1,7 +1,10 @@
 const Apex = require("apex-scoring");
 const config = require("../config/config.json")
+config.statsUrl = process.argv[2] || config.statsUrl;
 const apex = new Apex(config);
 const { open } = require("fs/promises");
+
+console.log("Using ", config.statsUrl, " as Respawn API")
 
 function generateStats(eventId, statsCode, round, skipFetch) {
     apex.createStats(eventId, statsCode, round, skipFetch)
