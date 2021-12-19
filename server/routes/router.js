@@ -1,6 +1,8 @@
-const mockStats = require("../mock/eastats.json")
+const mockStats = require("../mock/eastats2.json")
 const apexService = require("../services/apex.service")
 const _ = require("lodash");
+
+const display = {};
 
 module.exports = function router(app) {
 
@@ -18,6 +20,21 @@ module.exports = function router(app) {
 
         const stats = apexService.generateStats(eventId, statsCode, round, skipFetch);
         res.json(stats);
+    })
+
+    app.post("/display/:eventId", (req, res) => {
+        display[req.params.eventId] = {
+            display: req.body.display,
+            display2: req.body.display2,
+            mode: req.body.mode,
+            round: req.body.round,
+            styled: req.body.styled,
+        }
+        res.json({});
+    })
+
+    app.get("/display/:eventId", (req, res) => {
+        res.json(display[req.params.eventId]);
     })
 
     app.get("/stats/event/:eventId/round/:round", async (req, res) => {

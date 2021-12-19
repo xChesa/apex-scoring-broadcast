@@ -19,8 +19,19 @@ function apexService(config) {
         })
     }
 
+    async function getDisplayView(eventId) {
+        let data = await axios.get(config.baseUrl + "/display/" + eventId);
+        return data.data;
+    }
+
+    async function setDisplayView(eventId, display) {
+        await axios.post(config.baseUrl + "/display/" + eventId, display);
+    } 
+
     return {
         getStats,
-        generateStats
+        generateStats,
+        getDisplayView,
+        setDisplayView,
     }
 }
