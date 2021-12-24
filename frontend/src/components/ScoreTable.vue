@@ -34,7 +34,7 @@
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }" >
               <div>{{score.teamName }}</div>
               <div class="score-player-names" v-if="mode == 'team'">
-                <span v-for="player in getPlayers(score.id)" :key="player">{{ player }} &nbsp;</span>
+                <span v-for="player in getPlayers(score.teamName)" :key="player">{{ player }} &nbsp;</span>
               </div>
             </div>
             <div v-else class="score-item score-name score-player-name" :class="{ 'score-name-styled': styled }" >
@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     getPlayers(id) {
-      return _.find(this.stats, stat => stat.overall_stats.id == id).player_stats.map((stat) => stat.playerName);
+      return _.find(this.stats, stat => stat.overall_stats.teamName == id).player_stats.map((stat) => stat.playerName);
     },
   },
 };
