@@ -68,7 +68,7 @@ export default {
   props: ["stats", "display", "display2", "styled", "mode"],
   computed: {
     sortedScores() {
-      let scores = pad_array(this.scores, 20, {});
+      let scores = this.scores.length < 20 ? pad_array(this.scores, 20, {}) : this.scores;
       let sort = this.display;
       if (this.display == "score") {
         sort = scores[0].position ? "position" : "score"
