@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     getPlayers(index) {
-      return this.stats[index].player_stats.map((stat) => stat.playerName);
+      return this.sortedScores[index].player_stats.map((stat) => stat.playerName);
     },
   },
 };
