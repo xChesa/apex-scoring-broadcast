@@ -10,6 +10,7 @@
                 <v-text-field
                   v-model="eventIdForm"
                   label="Event ID"
+                  @v-on:keyup.enter="eventIdSet"
                 ></v-text-field>
               </v-card-text>
               <v-card-actions>
@@ -23,7 +24,7 @@
             <v-card>
               <v-card-title
                 >Event: {{ eventId }}
-                <v-btn @click="eventId = undefined">Change</v-btn></v-card-title
+                <v-btn @click="eventIdForm = undefined; eventIdSet()" color="blue" class="ma-2">Change</v-btn></v-card-title
               >
             </v-card>
           </v-col>
@@ -50,11 +51,17 @@
             <v-card>
               <v-card-title>Display</v-card-title>
               <v-card-text>
-                <v-checkbox label="Styled" v-model="displayChoices.styled" @change="updateDisplayView"></v-checkbox>
+                <v-row>
+                  <v-col cols="6">
+                    <v-checkbox label="Styled" v-model="displayChoices.styled"></v-checkbox>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-checkbox label="Light Text" v-model="displayChoices.dark"></v-checkbox>
+                  </v-col>
+                </v-row>
                 <v-select
                   :items="displayOptions.round"
                   v-model="displayChoices.round"
-                  @change="updateDisplayView"
                 ></v-select>
                 <v-select
                   :items="displayOptions.mode"
@@ -62,22 +69,20 @@
                   @change="
                     this.displayChoices.display = undefined;
                     this.displayChoices.display2 = undefined;
-                    updateDisplayView;
                   "
                 ></v-select>
                 <v-select
                   v-if="displayChoices.mode"
                   :items="displayOptions.display[displayChoices.mode]"
                   v-model="displayChoices.display"
-                  @change="updateDisplayView"
                 ></v-select>
                 <v-select
                   v-if="displayChoices.mode"
                   :items="displayOptions.display[displayChoices.mode]"
                   v-model="displayChoices.display2"
-                  @change="updateDisplayView"
                   clearable
                 ></v-select>
+                <v-btn @click="updateDisplayView" color="blue" class="ma-2">Update</v-btn>
 
                 <div v-if="eventId" class="display-wrapper">
                   <router-link target="_blank" :to="{name: 'display', params: {eventId}}" ><display class="display-viewport" :eventId="this.eventId"></display></router-link>
@@ -98,10 +103,10 @@ export default {
   components: {
     Display,
   },
+  props: ["eventId"],
   data() {
     return {
       eventIdForm: undefined,
-      eventId: undefined,
       round: 1,
       statsCode: undefined,
       skipFetch: false,
@@ -111,6 +116,7 @@ export default {
         display: undefined,
         display2: undefined,
         round: "overall",
+        dark: false,
       },
       displayOptions: {
         mode: ["team", "player"],
@@ -118,13 +124,32 @@ export default {
           team: [
             "score",
             "kills",
-            "survivalTime",
             "damageDealt",
             "bestGame",
             "bestPlacement",
             "bestKills",
+            "revivesGiven",
+            "headshots",
+            "assists",
+            "respawnsGiven",
+            "hits",
+            "knockdowns",
+            "shots",
+            "accuracy"
           ],
-          player: ["kills", "damageDealt"],
+          player: [
+            "kills", 
+            "damageDealt", 
+            "survivalTime",
+            "revivesGiven",
+            "headshots",
+            "assists",
+            "respawnsGiven",
+            "hits",
+            "knockdowns",
+            "shots",
+            "accuracy",
+          ],
         },
         round: ["overall", "1", "2", "3", "4", "5", "6"],
       },
@@ -144,13 +169,17 @@ export default {
       this.$apex.setDisplayView(this.eventId, this.displayChoices);
     },
     async eventIdSet() {
-      this.eventId = this.eventIdForm;
+      this.$router.replace({"name": "admin", params: {eventId: this.eventIdForm}});
+    }
+  },
+  async mounted() {
+    if(this.eventId) {
       let options = await this.$apex.getDisplayView(this.eventId);
       if(options) {
         this.displayChoices = options;
       }
     }
-  },
+  }
 };
 </script>
 <style scoped>

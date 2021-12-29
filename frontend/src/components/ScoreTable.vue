@@ -10,11 +10,11 @@
             <div class="score-item score-name">
               <div>{{ mode == "team" ? "Team Name" : "Player Name" }}</div>
             </div>
-            <div class="score-item score-value">
-              &nbsp;{{ display2 }}&nbsp;
+            <div class="score-item score-value score-header">
+              <template v-if="display2">&nbsp;{{ getDisplayName(display) }}&nbsp;</template>
             </div>
-            <div class="score-item score-value">
-              &nbsp;{{ display }}&nbsp;
+            <div class="score-item score-value score-header">
+              &nbsp;{{ getDisplayName(display2 || display) }}&nbsp;
             </div>
           </div>
         </div>
@@ -41,13 +41,13 @@
               <div>{{score.playerName }}</div>
             </div>
              <div class="score-item score-value" :class="{ 'score-value-styled': styled }" >
-              &nbsp;{{ score[display2] }}&nbsp;
+              <template v-if="display2">&nbsp;{{ score[display] }}&nbsp;</template>
             </div>
             <div
               class="score-item score-value"
               :class="{ 'score-value-styled': styled }"
             >
-              &nbsp;{{ score[display] }}&nbsp;
+              &nbsp;{{ score[display2 || display] }}&nbsp;
             </div>
           </div>
         </div>
@@ -58,8 +58,16 @@
 
 <script>
 import _ from "lodash";
-const invertSort = ["position", "bestPlacment"]
-
+const invertSort = ["position", "bestPlacement"]
+const displayName = {
+  "bestPlacement": "Placement",
+  "survivalTime": "Time Alive",
+  "bestGame": "Best Game",
+  "damageDealt": "Damage",
+  "bestKills": "Best Kills",
+  "revivesGiven": "Revives",
+  "respawnsGiven": "Respawns",
+}
 const pad_array = function (arr, len, fill) {
   return arr.concat(Array(len).fill(fill)).slice(0, len);
 };
@@ -105,6 +113,9 @@ export default {
     getPlayers(id) {
       return _.find(this.stats, stat => stat.overall_stats.teamName == id).player_stats.map((stat) => stat.playerName);
     },
+    getDisplayName(display) {
+      return displayName[display] || display;
+    }
   },
 };
 </script>
@@ -115,19 +126,17 @@ export default {
   width: 100%;
 }
 
-.overall-wrap-styled {
-  color: white;
-}
 .table-header .score-item {
-  color: white;
   height: 23px;
   line-height: 20px;
   font-size: 18px;
+  white-space:nowrap!important;
+  overflow: visible;
 }
 
 .score-wrap {
   margin: auto;
-  width: 640px;
+  width: 680px;
 }
 
 .column {
@@ -153,7 +162,7 @@ export default {
 }
 
 .score-name {
-  width: 385px;
+  width: 425px;
   padding-left: 10px;
   font-size: 25px;
 }
@@ -179,7 +188,7 @@ export default {
 .table-wrap {
   position: relative;
   top: 200px;
-  width: 1400px;
+  width: 1500px;
   height: 710px;
   margin: auto;
   /* background-color: rgba(255, 0, 0, .5); */

@@ -29,6 +29,7 @@ module.exports = function router(app) {
             mode: req.body.mode,
             round: req.body.round,
             styled: req.body.styled,
+            dark: req.body.dark
         }
         res.json({});
     })

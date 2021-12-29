@@ -6,6 +6,7 @@
     :round="displayOptions.round"
     :display="displayOptions.display"
     :display2="displayOptions.display2"
+    :dark="displayOptions.dark"
   ></scoreboard>
 </template>
 <script>
@@ -28,7 +29,8 @@ export default {
       this.displayOptions = await this.$apex.getDisplayView(this.eventId);
     },
   },
-  mounted() {
+  async mounted() {
+    await this.$nextTick();
     this.interval = setInterval(() => this.update(), 1000);
     this.update();
   },

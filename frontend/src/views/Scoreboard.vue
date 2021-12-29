@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="scoreboard-wrap"  :class="{ 'scoreboard-wrap-styled': styled }">
+        <div class="scoreboard-wrap"  :class="{ 'scoreboard-wrap-styled': styled, 'white-text': dark }">
             <div class="scoreboard-header-wrap">
                 <div class="scoreboard-header"  :class="{ 'scoreboard-header-styled': styled }">
-                    <div class="scoreboard-header-backing"></div>
+                    <div v-if="styled" class="scoreboard-header-backing"></div>
                     <div class="scoreboard-header-text">{{title}}</div>
                 </div>
             </div>
@@ -18,7 +18,7 @@ export default {
     components: {
         ScoreTable,
     },
-    props: ["eventId", "round", "mode", "display", "display2", "styled"],
+    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark"],
     data() {
         return {
             stats: undefined,
@@ -70,6 +70,10 @@ export default {
     width: 100%;
 }
 
+.white-text { 
+    color: white;
+}
+
 .scoreboard-header {
     width: 40%;
     /* margin: auto; */
@@ -77,13 +81,7 @@ export default {
     font-size: 50px;
     line-height: 80px;
     text-align: center;
-}
-
-
-.scoreboard-header-styled {
-    color: white;
-    /* background: rgb(151, 11, 11);; */
-   position: relative;
+    position: relative;
 }
 
 .scoreboard-header-text {

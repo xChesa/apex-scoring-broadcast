@@ -20,9 +20,10 @@ const routes = [
     props: true,
   },
   {
-    path: '/admin',
-    name: 'Admin',
-    component: Admin
+    path: '/admin/:eventId?',
+    name: 'admin',
+    component: Admin,
+    props: true,
   },
 ]
 
