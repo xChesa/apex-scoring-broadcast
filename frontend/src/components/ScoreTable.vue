@@ -28,8 +28,7 @@
             <div
               class="score-item score-index"
               :class="{ 'score-index-styled': styled }"
-            >
-              <div>&nbsp;{{ score.index }}&nbsp;</div>
+            ><div>{{ score.index }}</div>
             </div>
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }" >
               <div>{{score.teamName }}</div>
