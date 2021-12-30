@@ -12,6 +12,10 @@ app.use(cors());
 
 router(app);
 
+process.on('uncaughtException', function (err) {
+    console.log(err);
+})
+
 const staticFileMiddleware = express.static('dist');
 
 app.use(staticFileMiddleware);
