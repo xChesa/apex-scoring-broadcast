@@ -159,7 +159,7 @@ export default {
     update() {
       this.$apex.generateStats(
         this.eventId,
-        this.statsCode,
+        this.statsCode.trim(),
         this.round,
         this.skipFetch
       );
