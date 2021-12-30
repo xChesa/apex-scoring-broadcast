@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     getPlayers(id) {
-      return _.find(this.stats, stat => stat.overall_stats.teamName == id).player_stats.map((stat) => stat.playerName);
+      return (_.find(this.stats, stat => stat.overall_stats.teamName == id) || {player_stats:[]}).player_stats.map((stat) => stat.playerName);
     },
     getDisplayName(display) {
       return displayName[display] || display;
