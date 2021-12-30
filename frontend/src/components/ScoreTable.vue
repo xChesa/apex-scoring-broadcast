@@ -83,7 +83,7 @@ export default {
 
       scores = scores.sort((a, b) => {
         if(invertSort.includes(sort)){
-          if(a[sort] == "") return 1;
+          if(a[sort] == "") return -1;
           if(b[sort] == "") return 1;
 
           return a[sort] - b[sort];
