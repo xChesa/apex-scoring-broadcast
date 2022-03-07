@@ -18,7 +18,7 @@ export default {
     components: {
         ScoreTable,
     },
-    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark"],
+    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark", "header"],
     data() {
         return {
             stats: undefined,
@@ -35,14 +35,19 @@ export default {
     },
     computed: {
         title() {
-            if(this.round == "overall") {
-                return "Leaderboard"
+            if(this.header) {
+                if(this.round == "overall") {
+                    return "Leaderboard"
+                } else {
+                    return `Game ${this.round}`
+                }
             } else {
-                return `Game ${this.round}`
+                return " "
             }
         }
     },
-    mounted() {
+    async mounted() {
+        await this.$nextTick();
         this.updateScores();
         this.interval = setInterval(() => this.updateScores(), 3000);
     },

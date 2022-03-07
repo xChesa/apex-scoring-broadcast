@@ -52,11 +52,14 @@
               <v-card-title>Display</v-card-title>
               <v-card-text>
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="4">
                     <v-checkbox label="Styled" v-model="displayChoices.styled"></v-checkbox>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="4">
                     <v-checkbox label="Light Text" v-model="displayChoices.dark"></v-checkbox>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-checkbox label="Show Header" v-model="displayChoices.header"></v-checkbox>
                   </v-col>
                 </v-row>
                 <v-select
@@ -115,6 +118,7 @@ export default {
         mode: undefined,
         display: undefined,
         display2: undefined,
+        header: true,
         round: "overall",
         dark: false,
       },

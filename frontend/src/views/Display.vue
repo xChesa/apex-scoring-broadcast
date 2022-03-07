@@ -7,6 +7,7 @@
     :display="displayOptions.display"
     :display2="displayOptions.display2"
     :dark="displayOptions.dark"
+    :header="displayOptions.header"
   ></scoreboard>
 </template>
 <script>
