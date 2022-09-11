@@ -6,8 +6,11 @@ const statsService = require("./stats.service");
 const SCORE_ARRAY = [12, 9, 7, 5, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
 const scoreSums = ["kills", "revivesGiven", "headshots", "assists", "respawnsGiven", "damageDealt", "hits", "knockdowns", "shots"];
 
+
+
 module.exports = function Apex(config) {
-    
+    console.log("Using ", config.statsUrl, " as Respawn API")
+
     async function getStatsFromCode(statsCode, placementPoints, killPoints) {
         console.log("Getting stats from ", statsCode);
 

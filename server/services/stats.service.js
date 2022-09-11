@@ -2,8 +2,6 @@ const config = require("../config/config.json")
 const fs = require("fs");
 const { open } = require("fs/promises");
 
-console.log("Using ", config.statsUrl, " as Respawn API")
-
 function getStatsPath(eventId) {
     return config.statsPath + "/" + eventId + "/";
 }
