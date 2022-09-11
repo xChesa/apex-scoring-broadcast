@@ -3,7 +3,7 @@ read endpoint
 cd frontend
 npm install
 npm run build
-mv -r ./dist ../server/
+mv ./dist ../server/
 
 cd ../server
 npm install
