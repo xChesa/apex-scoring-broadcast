@@ -73,9 +73,7 @@ module.exports = function Apex(config) {
                         player.accuracy = Math.floor(100 * (player.hits / player.shots)) / 100;
                         player.characters = player.characters || []
                         player.characters.push(p.characterName);
-                        console.log(player.playerName, player.characters)
-                        player.characters = _.uniq(player.characters);
-                        console.log(player.playerName, player.characters)
+                        player.characters = _.uniq(player.characters.reverse());
 
                         teamStats.player_stats[p.playerName] = player;
                     });

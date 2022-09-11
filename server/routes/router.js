@@ -14,7 +14,8 @@ const defaultDisplay = {
     "round": "overall",
     "styled": true,
     "header": true,
-    "dark": true
+    "dark": true,
+    "showCharacters": true,
 }
 
 module.exports = function router(app) {
@@ -30,20 +31,23 @@ module.exports = function router(app) {
             statsCode,
             startTime,
             placementPoints, 
-            killPoints
+            killPoints,
+            skipFetch,
         } = req.body;
 
-        const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
-        let game;
-        if (startTime) 
-            game = allStats.find(({ match_start }) => match_start == startTime);
-        else 
-            game = allStats[0]
+        if (!skipFetch) {
+            const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
+            let game;
+            if (startTime)
+                game = allStats.find(({ match_start }) => match_start == startTime);
+            else
+                game = allStats[0]
 
-        if (!game)
-            return res.sendStats(404);
+            if (!game)
+                return res.sendStats(404);
         
-        await statsService.writeStats(eventId, round, game);
+            await statsService.writeStats(eventId, round, game);
+        }
         const overall = apexService.generateOverallStats(eventId, round);
         await statsService.writeStats(eventId, "overall", overall);
 
@@ -58,7 +62,8 @@ module.exports = function router(app) {
             round: req.body.round,
             styled: req.body.styled,
             header: req.body.header,
-            dark: req.body.dark
+            dark: req.body.dark,
+            showCharacters: req.body.showCharacters
         }
         res.json({});
     })
@@ -80,6 +85,5 @@ module.exports = function router(app) {
         let file = await statsService.getStatsFile(eventId, round);
         res.send(file);
     })
-
 
 }

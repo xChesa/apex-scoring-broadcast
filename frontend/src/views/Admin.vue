@@ -55,13 +55,11 @@
                     <v-expansion-panel-content>
                       <v-text-field v-model.number="killPoints" label="Kill Points"></v-text-field>
                       <v-text-field v-model="placementPoints" label="Placement Points"></v-text-field>
+                      <v-switch v-model="skipFetch" label="Dont pull stats, refresh only"></v-switch>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
                 </v-expansion-panels>
-                <!-- <v-switch
-                  v-model="skipFetch"
-                  label="Skip retriving stats from EA"
-                ></v-switch> -->
+
               </v-card-text>
               <v-card-actions>
                 <v-btn color="blue" @click="update">Add Game</v-btn>
@@ -73,14 +71,17 @@
               <v-card-title>Display</v-card-title>
               <v-card-text>
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="3">
                     <v-checkbox label="Styled" v-model="displayChoices.styled"></v-checkbox>
                   </v-col>
-                  <v-col cols="4">
+                  <v-col cols="3">
                     <v-checkbox label="Light Text" v-model="displayChoices.dark"></v-checkbox>
                   </v-col>
-                  <v-col cols="4">
+                  <v-col cols="3">
                     <v-checkbox label="Show Header" v-model="displayChoices.header"></v-checkbox>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-checkbox label="Show Characters" v-model="displayChoices.showCharacters"></v-checkbox>
                   </v-col>
                 </v-row>
                 <v-select :items="displayOptions.round" v-model="displayChoices.round"></v-select>
@@ -182,8 +183,9 @@ export default {
         this.statsCode.trim(),
         this.round,
         this.selectedGame,
+        this.skipFetch,
         this.killPoints,
-        this.placementPoints.split(",").map(n => parseInt(n))
+        this.placementPoints.split(",").map(n => parseInt(n)),
       );
     },
     updateDisplayView() {

@@ -25,9 +25,9 @@ function apexService(config) {
         return stats.data;
     }
 
-    async function generateStats(eventId, statsCode, round, startTime, killPoints, placementPoints) {
+    async function generateStats(eventId, statsCode, round, startTime, skipFetch, killPoints, placementPoints) {
         await axios.post(config.baseUrl + "stats", {
-            eventId, statsCode, round, startTime, killPoints, placementPoints
+            eventId, statsCode, round, startTime, killPoints, placementPoints, skipFetch
         })
     }
 

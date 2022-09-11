@@ -8,7 +8,7 @@
               <div>&nbsp;#&nbsp;</div>
             </div>
             <div class="score-item score-name">
-              <div>{{ mode == "team" ? "Team Name" : "Player Name" }}</div>
+              <div>{{ mode == "team" ? "Team" : "Player" }}</div>
             </div>
             <div class="score-item score-value score-header">
               <template v-if="display2">&nbsp;{{ getDisplayName(display) }}&nbsp;</template>
@@ -23,13 +23,21 @@
             <div class="score-item score-index" :class="{ 'score-index-styled': styled }">
               <div>{{ score.index }}</div>
             </div>
-            <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
-              <div class="character-flex">
-                <div class="character" v-for="character in getCharacters(score.teamName)" :key="character">
-                  <img height="23" :src="'/legend_icons/' + character + '.webp'">&nbsp;
+            <template v-if="showCharacters">
+              <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
+                <div class="character-flex">
+                  <div class="character" v-for="character in getCharacters(score.teamName)" :key="character">
+                    <img height="23" :src="'/legend_icons/' + character + '.webp'">&nbsp;
+                  </div>
                 </div>
               </div>
-            </div>
+              <div class="character-wrap-player score-item" :class="{ 'character-wrap-styled': styled }"
+                v-if="mode == 'player'">
+                <div class="character-player" v-for="character in score.characters || [score.characterName]" :key="character">
+                  <img height="70" :src="'/legend_icons/' + character + '.webp'">&nbsp;
+                </div>
+              </div>
+            </template>
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }">
               <div>
                 {{score.teamName }}
@@ -73,7 +81,7 @@ const pad_array = function (arr, len, fill) {
 };
 
 export default {
-  props: ["stats", "display", "display2", "styled", "mode"],
+  props: ["stats", "display", "display2", "styled", "mode", "showCharacters"],
   computed: {
     sortedScores() {
       let scores = this.scores.length < 20 ? pad_array(this.scores, 20, {}) : this.scores;
@@ -148,9 +156,15 @@ export default {
   overflow: visible;
 }
 
+.score-wrap.table-header {
+  height: 25px;
+}
+
 .score-wrap {
   margin: auto;
   width: 680px;
+  display: flex;
+  height: 83px;
 }
 
 .column {
@@ -162,6 +176,13 @@ export default {
   display: inline-block;
   flex-wrap: wrap;
   width: 24px;
+  height: 70px;
+  margin: 0;
+  padding: 0;
+}
+
+.score-item.character-wrap-player {
+  display: inline-block;
   height: 70px;
   margin: 0;
   padding: 0;
@@ -186,6 +207,14 @@ export default {
   width: 23px;
 }
 
+.character-player {
+  height: 70px;
+  margin: 0;
+  padding: 0;
+  line-height: 70px;
+  display: inline-block;
+}
+
 .score-item {
   display: inline-block;
   height: 70px;
@@ -197,6 +226,7 @@ export default {
 
 .score-player-name {
   line-height: 55px;
+  flex-grow: 2;
 }
 
 .score-index {
@@ -206,7 +236,7 @@ export default {
 }
 
 .score-name {
-  width: 331px;
+  flex-grow: 2;
   padding-left: 10px;
   font-size: 25px;
 }

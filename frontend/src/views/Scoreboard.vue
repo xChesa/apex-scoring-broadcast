@@ -7,7 +7,7 @@
                     <div class="scoreboard-header-text">{{title}}</div>
                 </div>
             </div>
-            <score-table :stats="stats" :display2="display2" :display="display" :mode="mode" :styled="styled"/>
+            <score-table :showCharacters="showCharacters" :stats="stats" :display2="display2" :display="display" :mode="mode" :styled="styled"/>
         </div>
     </div>
 </template>
@@ -18,7 +18,7 @@ export default {
     components: {
         ScoreTable,
     },
-    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark", "header"],
+    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark", "header", "showCharacters"],
     data() {
         return {
             stats: [],

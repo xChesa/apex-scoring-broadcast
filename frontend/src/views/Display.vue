@@ -8,6 +8,7 @@
     :display2="displayOptions.display2"
     :dark="displayOptions.dark"
     :header="displayOptions.header"
+    :showCharacters="displayOptions.showCharacters"
   ></scoreboard>
 </template>
 <script>
