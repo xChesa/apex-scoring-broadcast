@@ -1,8 +1,21 @@
-const mockStats = require("../mock/eastats2.json")
-const apexService = require("../services/apex.service")
-const _ = require("lodash");
+const mockStats = require("../mock/eastats3.json")
+const statsService = require("../services/stats.service")
+const config = require("../config/config.json")
+config.statsUrl = process.argv[2] || config.statsUrl;
+
+const apexService = new require("../services/apex.service")(config);
+
 
 const display = {};
+const defaultDisplay = {
+    "display": "score",
+    "display2": "kills",
+    "mode": "team",
+    "round": "overall",
+    "styled": true,
+    "header": true,
+    "dark": true
+}
 
 module.exports = function router(app) {
 
@@ -10,16 +23,31 @@ module.exports = function router(app) {
         res.json(mockStats)
     })
 
-    app.post("/stats", (req, res) => {
+    app.post("/stats", async (req, res) => {
         const {
             eventId,
             round,
             statsCode,
-            skipFetch,
+            startTime,
+            placementPoints, 
+            killPoints
         } = req.body;
 
-        const stats = apexService.generateStats(eventId, statsCode, round, skipFetch);
-        res.json(stats);
+        const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
+        let game;
+        if (startTime) 
+            game = allStats.find(({ match_start }) => match_start == startTime);
+        else 
+            game = allStats[0]
+
+        if (!game)
+            return res.sendStats(404);
+        
+        await statsService.writeStats(eventId, round, game);
+        const overall = apexService.generateOverallStats(eventId, round);
+        await statsService.writeStats(eventId, "overall", overall);
+
+        res.json(overall);
     })
 
     app.post("/display/:eventId", (req, res) => {
@@ -35,8 +63,12 @@ module.exports = function router(app) {
         res.json({});
     })
 
+    app.get("/stats/code/:statsCode", async (req, res) => {
+        res.send(await apexService.getStatsFromCode(req.params.statsCode));
+    })
+
     app.get("/display/:eventId", (req, res) => {
-        res.json(display[req.params.eventId]);
+        res.json(display[req.params.eventId] || defaultDisplay);
     })
 
     app.get("/stats/event/:eventId/round/:round", async (req, res) => {
@@ -45,26 +77,7 @@ module.exports = function router(app) {
             round
         } = req.params;
 
-        let file = await apexService.getStatsFile(eventId, round);
-        if (round != "overall") {
-            file = _.values(file).map(team => {
-                return {
-                    overall_stats: {
-                        ...team.overall_stats,
-                        name: team.overall_stats.teamName
-                    },
-                    player_stats: team.player_stats.map(player => {
-                        return {
-                            ...player,
-                            name: player.playerName
-                        }
-                    })
-                }
-            });
-            file = file.sort((a, b) => {
-                return b.score - a.score;
-            })
-        }
+        let file = await statsService.getStatsFile(eventId, round);
         res.send(file);
     })
 

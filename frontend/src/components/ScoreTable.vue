@@ -102,7 +102,8 @@ export default {
       return _.zip(start, end).flat();
     },
     scores() {
-      return (this.stats || []).map((stat) => stat[this.computedMode]).flat();
+      console.log(JSON.stringify(this.stats))
+      return this.teamStats.map((stat) => stat[this.computedMode]).flat();
     },
     computedMode() {
       let modeMap = {
@@ -111,10 +112,13 @@ export default {
       };
       return modeMap[this.mode];
     },
+    teamStats() {
+      return this.stats.teams || this.stats || [];
+    }
   },
   methods: {
     getPlayers(id) {
-      return (_.find(this.stats, stat => stat.overall_stats.teamName == id) || {player_stats:[]}).player_stats.map((stat) => stat.playerName);
+      return (_.find(this.teamStats, stat => stat.overall_stats.teamName == id) || {player_stats:[]}).player_stats.map((stat) => stat.playerName);
     },
     getDisplayName(display) {
       return displayName[display] || display;

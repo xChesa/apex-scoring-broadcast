@@ -21,7 +21,7 @@ export default {
     props: ["eventId", "round", "mode", "display", "display2", "styled", "dark", "header"],
     data() {
         return {
-            stats: undefined,
+            stats: [],
             interval: 0,
         }
     },
@@ -30,6 +30,7 @@ export default {
         async updateScores() {
             if(this.round && this.mode && this.display) {
                 this.stats = await this.$apex.getStats(this.eventId, this.round);
+                console.log(this.stats)
             }
         }
     },
