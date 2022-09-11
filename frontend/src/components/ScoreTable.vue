@@ -20,27 +20,19 @@
         </div>
         <div class="column" v-for="score in sortedScores" :key="score.name" sm="6">
           <div class="score-wrap">
-            <div class="score-item score-index" :class="{ 'score-index-styled': styled }">
-              <div>{{ score.index }}</div>
-            </div>
-            <template v-if="showCharacters">
-              <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
-                <div class="character-flex">
-                  <div class="character" v-for="character in getCharacters(score.teamName)" :key="character">
-                    <img height="23" :src="'/legend_icons/' + character + '.webp'">&nbsp;
-                  </div>
-                </div>
-              </div>
-              <div class="character-wrap-player score-item" :class="{ 'character-wrap-styled': styled }"
-                v-if="mode == 'player'">
-                <div class="character-player" v-for="character in score.characters || [score.characterName]" :key="character">
-                  <img height="70" :src="'/legend_icons/' + character + '.webp'">&nbsp;
-                </div>
-              </div>
-            </template>
+            <div class="score-item score-index" :class="{ 'score-index-styled': styled }"> {{ score.index }} </div>
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }">
-              <div>
-                {{score.teamName }}
+              <div class="team-name-character-wrapper" :class="{ 'team-name-wrapper-override': score.teamName.length > 14 }">
+                <template v-if="showCharacters">
+                <div class="team-name" :class="{ 'team-name-override': score.teamName.length > 14 }"> {{ score.teamName }} </div>
+                <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
+                  <!-- <div class="character-inline-block" v-for="character in getCharacters(score.teamName)" :key="character"> -->
+                    <!-- <div class="character"> -->
+                      <img class="team-character" v-for="character in getCharacters(score.teamName)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
+                    <!-- </div> -->
+                  <!-- </div> -->
+                </div>
+                </template>
               </div>
               <div class="score-player-names" v-if="mode == 'team'">
                 <span v-for="player in getPlayers(score.teamName)" :key="player.playerName">
@@ -48,8 +40,11 @@
                   {{ cleanPlayerName(score.teamName, player.playerName) }} &nbsp;</span>
               </div>
             </div>
-            <div v-else class="score-item score-name score-player-name" :class="{ 'score-name-styled': styled }">
-              <div>{{cleanPlayerName(score.teamName, score.playerName) }}</div>
+            <div v-else class="score-item score-name score-player-name padding-zero" :class="{ 'score-name-styled': styled }">
+              <span v-if="mode == 'player' && showCharacters" class="character-wrap-player score-item" :class="{ 'character-wrap-styled': styled }">
+                <img v-for="character in score.characters || [score.characterName]" :key="character" height="70" :src="'/legend_icons/' + character + '.webp'">
+              </span>
+              <span class="fix-player-name">{{cleanPlayerName(score.teamName, score.playerName) }}</span>
             </div>
             <div class="score-item score-value" :class="{ 'score-value-styled': styled }">
               <template v-if="display2">&nbsp;{{ score[display] }}&nbsp;</template>
@@ -136,7 +131,7 @@ export default {
       return displayName[display] || display;
     },
     getCharacters(id) {
-      return _.uniq(this.getPlayers(id).map(player => player.characters || player.characterName).flat());
+      return _(this.getPlayers(id).map(player => player.characters || player.characterName)).zip().flattenDeep().uniq().value();
     }
   },
 };
@@ -163,7 +158,6 @@ export default {
 .score-wrap {
   margin: auto;
   width: 680px;
-  display: flex;
   height: 83px;
 }
 
@@ -174,9 +168,8 @@ export default {
 
 .score-item.character-wrap {
   display: inline-block;
-  flex-wrap: wrap;
-  width: 24px;
-  height: 70px;
+  /* width: 24px; */
+  height: 37px;
   margin: 0;
   padding: 0;
 }
@@ -188,20 +181,51 @@ export default {
   padding: 0;
 }
 
+.fix-player-name {
+  position: relative;
+  top: -25px;
+  margin-left: 8px;
+}
+
+.team-name-character-wrapper {
+  display: flex;
+  height: 34px;
+  margin-top: 2px;
+}
+
+.team-name {
+  position: relative;
+  top: -4px;
+  margin-right: 4px;
+}
+
+.team-name-override  {
+  font-size: 22px;
+  top: -2px;
+}
+
+.team-name-wrapper-override  {
+  margin-top: 3px;
+}
+
+.team-character {
+  margin-left: 4px;
+  /* display: inline-block; */
+}
+
 .character-wrap-styled {
   background: rgb(38, 31, 31);
 }
 
-.character-flex {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  height: 70px;
+.character-inline-block {
+  display: inline-block;
+  margin: 0 4px;
+  height: 26px;
 }
 
 .character {
   height: 23px;
-  margin: 0;
+  margin: 4px 0;
   padding: 0;
   line-height: 24px;
   width: 23px;
@@ -224,9 +248,13 @@ export default {
   /* border: 1px solid black; */
 }
 
+.score-name.padding-zero {
+  padding: 0;
+  padding-left: 0;
+}
+
 .score-player-name {
-  line-height: 55px;
-  flex-grow: 2;
+  line-height: 62px;
 }
 
 .score-index {
@@ -236,7 +264,7 @@ export default {
 }
 
 .score-name {
-  flex-grow: 2;
+  width: 425px;
   padding-left: 10px;
   font-size: 25px;
 }
