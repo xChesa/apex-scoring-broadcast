@@ -38,7 +38,7 @@
                     "hardware": "PC_STEAM",
                     "kills": 1,
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "headshots": 1
                 },
                 {
@@ -302,7 +302,7 @@
                     "damageDealt": 226,
                     "teamPlacement": 14,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "nidHash": "18b83dd98a9efd3c32c425f1fa4540fb3898d30d54836f1ba339fa0846ef93bff19d7ec0819a82dee47e47d1fc5411941152d8a6fc32fbedd803f220402d96c0",
                     "respawnsGiven": 0,
                     "teamNum": 8
@@ -663,7 +663,7 @@
                     "damageDealt": 530,
                     "teamPlacement": 11,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "nidHash": "097b666e93db95589e1e5b9b7a252022a3dea45e69f3083acafb308a13dbc04eba9453651bad5210ecae57b4f0cbf22500a47222fa329a3a112428dc7b26a693",
                     "kills": 0,
                     "teamNum": 5
@@ -1167,7 +1167,7 @@
                     "hardware": "PC_STEAM",
                     "headshots": 4,
                     "nidHash": "7627e74e3dffad025b904852ac113b9f826a3b3f0bbcf84cc4366c803944a5996fee94c7b25cea0075adf8e7e5d3b82e7f068f46b53bff0ad86d588d93859120",
-                    "characterName": "valkyrie",
+                    "characterName": "seer",
                     "kills": 1
                 },
                 {
@@ -1439,7 +1439,7 @@
                 {
                     "playerName": "ESA Fury",
                     "teamName": "ESA",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 232,
                     "teamNum": 8,
                     "knockdowns": 7,
@@ -1629,7 +1629,7 @@
                 {
                     "playerName": "RNG PowPow",
                     "teamName": "RNG",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 13,
                     "headshots": 4,
                     "knockdowns": 0,
@@ -1811,7 +1811,7 @@
                     "damageDealt": 600,
                     "teamPlacement": 15,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "seer",
                     "nidHash": "097b666e93db95589e1e5b9b7a252022a3dea45e69f3083acafb308a13dbc04eba9453651bad5210ecae57b4f0cbf22500a47222fa329a3a112428dc7b26a693",
                     "kills": 0,
                     "headshots": 9
@@ -2587,7 +2587,7 @@
                 {
                     "playerName": "ESA Fury",
                     "teamName": "ESA",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 40,
                     "headshots": 1,
                     "knockdowns": 2,
@@ -2834,7 +2834,7 @@
                 {
                     "playerName": "Double0negative",
                     "teamName": "CAS",
-                    "characterName": "loba",
+                    "characterName": "seer",
                     "hits": 62,
                     "headshots": 8,
                     "knockdowns": 0,
@@ -3100,7 +3100,7 @@
                 {
                     "playerName": "RNG PowPow",
                     "teamName": "RNG",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 8,
                     "headshots": 0,
                     "knockdowns": 1,
@@ -3735,7 +3735,7 @@
                 {
                     "playerName": "ESA Fury",
                     "teamName": "ESA",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 20,
                     "headshots": 2,
                     "knockdowns": 0,
@@ -4337,7 +4337,7 @@
                     "hardware": "PC_STEAM",
                     "respawnsGiven": 0,
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "headshots": 5
                 },
                 {
@@ -4647,7 +4647,7 @@
                     "damageDealt": 629,
                     "teamPlacement": 12,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "nidHash": "88c4c1a370f1f35a2f4895da0df96de5591a65fafae120a53fe0cf265b5e69a06604c9016e201898bfc857f6806c0543de7eca6029c889bfb816e3527fb6bf2f",
                     "teamNum": 19,
                     "kills": 3
@@ -4894,7 +4894,7 @@
                     "damageDealt": 62,
                     "teamPlacement": 16,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "nidHash": "18b83dd98a9efd3c32c425f1fa4540fb3898d30d54836f1ba339fa0846ef93bff19d7ec0819a82dee47e47d1fc5411941152d8a6fc32fbedd803f220402d96c0",
                     "headshots": 0,
                     "respawnsGiven": 0
@@ -5125,7 +5125,7 @@
                     "kills": 0,
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
                     "teamNum": 15,
-                    "characterName": "loba"
+                    "characterName": "mirage"
                 },
                 {
                     "playerName": "CLG_Nano",
@@ -6145,7 +6145,7 @@
                 {
                     "playerName": "ESA Fury",
                     "teamName": "ESA",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 40,
                     "headshots": 6,
                     "knockdowns": 1,
@@ -6840,7 +6840,7 @@
                     "damageDealt": 1135,
                     "teamPlacement": 6,
                     "hardware": "PC_STEAM",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
                     "teamNum": 15,
                     "kills": 3
@@ -7439,7 +7439,7 @@
                     "hardware": "PC_STEAM",
                     "teamNum": 16,
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "kills": 2
                 },
                 {
@@ -7540,7 +7540,7 @@
                 {
                     "playerName": "@Double0negative",
                     "teamName": "CAS",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 26,
                     "teamNum": 5,
                     "knockdowns": 0,
@@ -8916,7 +8916,7 @@
                 {
                     "playerName": "@Double0negative",
                     "teamName": "CAS",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 5,
                     "headshots": 0,
                     "knockdowns": 0,
@@ -9157,7 +9157,7 @@
                     "hardware": "PC_STEAM",
                     "headshots": 3,
                     "nidHash": "df6d15f257691971d7d3e15c6121663dd09c95c37689484aef725165f8ad263f340ac546de1904b134bd3fa9d98ceacdefbe7b4829874f7e23cc80185c13d9a4",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "kills": 2
                 },
                 {
@@ -12761,7 +12761,7 @@
                     "hardware": "PC",
                     "headshots": 0,
                     "nidHash": "d305c3c58a5e5ac8f318bfe0dcda3ada3271a714ecf6fd1f45053ed78e9d02bcf773014f5b042f575b81ac5fadd1f0916d23edd33cdc1e33d2e9d15d96258387",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "kills": 1
                 },
                 {
@@ -13109,7 +13109,7 @@
                 {
                     "playerName": "intel JET",
                     "teamName": "INTL",
-                    "characterName": "loba",
+                    "characterName": "mirage",
                     "hits": 3,
                     "headshots": 0,
                     "knockdowns": 0,

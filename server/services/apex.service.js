@@ -27,7 +27,6 @@ module.exports = function Apex(config) {
             let stat = JSON.parse(file);
             stat = stat.teams || stat;
             stat = _.keyBy(stat, "name");
-            console.log(stat)
             stats.push(stat);
         }
 
@@ -52,15 +51,16 @@ module.exports = function Apex(config) {
             stats.forEach(stat => {
                 if (stat[key]) {
                     let t = stat[key].overall_stats;
+                    let overall_stats = teamStats.overall_stats;
                     teamStats.name = key;
                     if (!teamStats.overall_stats.teamName)
                         teamStats.overall_stats.teamName = t.teamName;
-                    teamStats.overall_stats.score += t.score;
-                    teamStats.overall_stats.bestGame = Math.max(teamStats.overall_stats.bestGame, t.score);
-                    teamStats.overall_stats.bestPlacement = Math.min(teamStats.overall_stats.bestPlacement, t.teamPlacement);
-                    teamStats.overall_stats.bestKills = Math.max(teamStats.overall_stats.bestKills, t.kills);
-                    scoreSums.forEach(key => teamStats.overall_stats[key] += t[key]);
-                    teamStats.overall_stats.accuracy = Math.floor(100 * (teamStats.overall_stats.hits / teamStats.overall_stats.shots)) / 100;
+                    overall_stats.score += t.score;
+                    overall_stats.bestGame = Math.max(overall_stats.bestGame, t.score);
+                    overall_stats.bestPlacement = Math.min(overall_stats.bestPlacement, t.teamPlacement);
+                    overall_stats.bestKills = Math.max(overall_stats.bestKills, t.kills);
+                    scoreSums.forEach(key => overall_stats[key] += t[key]);
+                    overall_stats.accuracy = Math.floor(100 * (overall_stats.hits / overall_stats.shots)) / 100;
 
                     let playerStats = stat[key].player_stats;
                     playerStats.forEach(p => {
@@ -71,6 +71,12 @@ module.exports = function Apex(config) {
                         player.playerName = p.playerName;
                         scoreSums.forEach(key => player[key] = (player[key] || 0) + p[key]);
                         player.accuracy = Math.floor(100 * (player.hits / player.shots)) / 100;
+                        player.characters = player.characters || []
+                        player.characters.push(p.characterName);
+                        console.log(player.playerName, player.characters)
+                        player.characters = _.uniq(player.characters);
+                        console.log(player.playerName, player.characters)
+
                         teamStats.player_stats[p.playerName] = player;
                     });
                 }
