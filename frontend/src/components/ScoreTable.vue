@@ -259,7 +259,7 @@ export default {
 }
 
 .score-name {
-  width: 420px;
+  width: 417px;
   padding-left: 10px;
   font-size: 25px;
 }
