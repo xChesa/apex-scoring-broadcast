@@ -182,10 +182,6 @@ export default {
   margin-left: 8px;
 }
 
-.fix-player-name .player-name-no-character {
-  top: 0px
-}
-
 .team-name-character-wrapper {
   display: flex;
   height: 34px;
