@@ -23,14 +23,10 @@
             <div class="score-item score-index" :class="{ 'score-index-styled': styled }"> {{ score.index }} </div>
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }">
               <div class="team-name-character-wrapper" :class="{ 'team-name-wrapper-override': score.teamName.length > 14 }">
-                <template v-if="showCharacters">
                 <div class="team-name" :class="{ 'team-name-override': score.teamName.length > 14 }"> {{ score.teamName }} </div>
+                <template v-if="showCharacters">
                 <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
-                  <!-- <div class="character-inline-block" v-for="character in getCharacters(score.teamName)" :key="character"> -->
-                    <!-- <div class="character"> -->
-                      <img class="team-character" v-for="character in getCharacters(score.teamName)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
-                    <!-- </div> -->
-                  <!-- </div> -->
+                  <img class="team-character" v-for="character in getCharacters(score.teamName)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
                 </div>
                 </template>
               </div>
@@ -259,12 +255,12 @@ export default {
 
 .score-index {
   width: 55px;
-  line-height: 65px;
+  line-height: 70px;
   text-align: center;
 }
 
 .score-name {
-  width: 425px;
+  width: 420px;
   padding-left: 10px;
   font-size: 25px;
 }
@@ -289,7 +285,7 @@ export default {
 .score-value {
   width: 100px;
   padding-right: 15px;
-  line-height: 65px;
+  line-height: 70px;
   text-align: right;
 }
 
