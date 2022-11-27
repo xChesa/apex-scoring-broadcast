@@ -1,4 +1,18 @@
 {
     "statsPath": "./stats",
-    "statsUrl": "http://localhost:3000/mock?="
+    "statsUrl": "http://localhost:3000/mock?=",
+    "db": {
+        "client": "pg",
+        "connection": {
+            "user": "postgres",
+            "password": "postgrespw",
+            "host": "host.docker.internal",
+            "port": "49153",
+            "database": "apex"
+        },
+        "pool": { 
+            "min": 0, 
+            "max": 10
+        }
+    }
 }

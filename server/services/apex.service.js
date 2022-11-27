@@ -1,12 +1,8 @@
 const axios = require("axios");
 const _ = require("lodash");
-const fs = require("fs");
-const statsService = require("./stats.service");
 
 const SCORE_ARRAY = [12, 9, 7, 5, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
 const scoreSums = ["kills", "revivesGiven", "headshots", "assists", "respawnsGiven", "damageDealt", "hits", "knockdowns", "shots"];
-
-
 
 module.exports = function Apex(config) {
     console.log("Using ", config.statsUrl, " as Respawn API")
@@ -21,32 +17,21 @@ module.exports = function Apex(config) {
         return stats;
     }
 
-    function generateOverallStats(eventId, round) {
-        let stats = [];
-        const path = statsService.getFilePath(eventId);
-
-        for (let a = 1; a <= round; a++) {
-            let file = fs.readFileSync(path + a + ".json");
-            let stat = JSON.parse(file);
-            stat = stat.teams || stat;
-            stat = _.keyBy(stat, "name");
-            stats.push(stat);
-        }
+    function generateOverallStats(stats) {
+        stats = stats.map(stat => _.keyBy(stat.teams, "id"));
 
         let overall = [];
         let teams = _(stats).map(m => Object.keys(m)).flatten().uniq().value();
-
 
         teams.forEach(key => {
             let teamStats = {
                 overall_stats: {
                     position: 20,
-                    teamName: "",
                     score: 0,
                     bestGame: 0,
                     bestPlacement: 20,
                     bestKills: 0,
-                    id: "",
+                    id: key,
                 },
                 player_stats: {}
             };
@@ -56,8 +41,8 @@ module.exports = function Apex(config) {
                     let t = stat[key].overall_stats;
                     let overall_stats = teamStats.overall_stats;
                     teamStats.name = key;
-                    if (!teamStats.overall_stats.teamName)
-                        teamStats.overall_stats.teamName = t.teamName;
+                    if (!teamStats.overall_stats.name)
+                        teamStats.overall_stats.name = t.name;
                     overall_stats.score += t.score;
                     overall_stats.bestGame = Math.max(overall_stats.bestGame, t.score);
                     overall_stats.bestPlacement = Math.min(overall_stats.bestPlacement, t.teamPlacement);
@@ -67,18 +52,19 @@ module.exports = function Apex(config) {
 
                     let playerStats = stat[key].player_stats;
                     playerStats.forEach(p => {
-                        let player = teamStats.player_stats[p.playerName] || {
-                            playerName: "",
+                        let player = teamStats.player_stats[p.playerId] || {
+                            name: "",
+                            playerId: p.playerId,
                         };
 
-                        player.playerName = p.playerName;
+                        player.name = p.name;
                         scoreSums.forEach(key => player[key] = (player[key] || 0) + p[key]);
                         player.accuracy = Math.floor(100 * (player.hits / player.shots)) / 100;
                         player.characters = player.characters || []
                         player.characters.push(p.characterName);
                         player.characters = _.uniq(player.characters.reverse());
 
-                        teamStats.player_stats[p.playerName] = player;
+                        teamStats.player_stats[p.playerId] = player;
                     });
                 }
 
@@ -124,9 +110,10 @@ module.exports = function Apex(config) {
             let teamId = "team" + player.teamNum;
             if (!teams[teamId]) {
                 teams[teamId] = {
+                    id: parseInt(teamId.replace("team", "")),
+                    name: player.teamName,
                     overall_stats: {
                         teamPlacement: player.teamPlacement,
-                        teamName: player.teamName,
                         score: placementPoints[player.teamPlacement - 1]
                     },
                     player_stats: []
@@ -140,7 +127,8 @@ module.exports = function Apex(config) {
 
         teams = _.values(teams).map(team => {
             return {
-                name: team.overall_stats.teamName,
+                name: team.name,
+                id: team.id,
                 overall_stats: team.overall_stats,
                 player_stats: team.player_stats.map(player => {
                     return {

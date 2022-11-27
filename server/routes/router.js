@@ -2,9 +2,9 @@ const mockStats = require("../mock/eastats3.json")
 const statsService = require("../services/stats.service")
 const config = require("../config/config.json")
 config.statsUrl = process.argv[2] || config.statsUrl;
-
+const { verifyOrganizerHeaders } = require("../middleware/auth");
 const apexService = new require("../services/apex.service")(config);
-
+const authService = require("../services/auth.service");
 
 const display = {};
 const defaultDisplay = {
@@ -24,7 +24,19 @@ module.exports = function router(app) {
         res.json(mockStats)
     })
 
-    app.post("/stats", async (req, res) => {
+    app.post("/auth/organizer", async (req, res) => {
+        const {
+            key, username
+        } = req.body;
+
+        let organizer = await authService.getOrganizer(username, key);
+
+        res.send({
+            valid: organizer != undefined
+        })
+    })
+
+    app.post("/stats", verifyOrganizerHeaders, async (req, res) => {
         const {
             eventId,
             round,
@@ -45,16 +57,13 @@ module.exports = function router(app) {
 
             if (!game)
                 return res.sendStats(404);
-        
-            await statsService.writeStats(eventId, round, game);
+                    
+            await statsService.writeStats(req.organizer, eventId, round, game);
         }
-        const overall = apexService.generateOverallStats(eventId, round);
-        await statsService.writeStats(eventId, "overall", overall);
-
-        res.json(overall);
+        res.status(200).send();
     })
 
-    app.post("/display/:eventId", (req, res) => {
+    app.post("/display/:eventId", verifyOrganizerHeaders, (req, res) => {
         display[req.params.eventId] = {
             display: req.body.display,
             display2: req.body.display2,
@@ -68,7 +77,7 @@ module.exports = function router(app) {
         res.json({});
     })
 
-    app.get("/stats/code/:statsCode", async (req, res) => {
+    app.get("/stats/code/:statsCode", verifyOrganizerHeaders, async (req, res) => {
         res.send(await apexService.getStatsFromCode(req.params.statsCode));
     })
 
@@ -82,8 +91,17 @@ module.exports = function router(app) {
             round
         } = req.params;
 
-        let file = await statsService.getStatsFile(eventId, round);
-        res.send(file);
+        let stats = await statsService.getStats(eventId, round);
+        
+        if (!stats || stats.length == 0) {
+            return res.send({});
+        }
+
+        if (round == "overall") {
+            res.send(apexService.generateOverallStats(stats));
+        } else {
+            res.send(stats[0]);
+        }
     })
 
 }

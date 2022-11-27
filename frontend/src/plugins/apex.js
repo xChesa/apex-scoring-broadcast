@@ -13,10 +13,23 @@ export default {
     }
 }
 
+function getApiKeyHeaders() {
+    return {
+        "x-organizer-key": localStorage.getItem("organizer-key"),
+        "x-organizer-name": localStorage.getItem("organizer-username"),
+    }
+}
+
 function apexService(config) {
 
+    async function checkApiKey(username, key) {
+        let result = await axios.post(`${config.baseUrl}auth/organizer`, { username, key });
+
+        return result.data.valid;
+    }
+
     async function getStatsFromCode(statsCode) {
-        let stats = await axios.get(`${config.baseUrl}stats/code/${statsCode}`);
+        let stats = await axios.get(`${config.baseUrl}stats/code/${statsCode}`, {headers: getApiKeyHeaders()});
         return stats.data;
     }
 
@@ -28,7 +41,7 @@ function apexService(config) {
     async function generateStats(eventId, statsCode, round, startTime, skipFetch, killPoints, placementPoints) {
         await axios.post(config.baseUrl + "stats", {
             eventId, statsCode, round, startTime, killPoints, placementPoints, skipFetch
-        })
+        }, {headers: getApiKeyHeaders()})
     }
 
     async function getDisplayView(eventId) {
@@ -37,7 +50,7 @@ function apexService(config) {
     }
 
     async function setDisplayView(eventId, display) {
-        await axios.post(config.baseUrl + "display/" + eventId, display);
+        await axios.post(config.baseUrl + "display/" + eventId, display, {headers: getApiKeyHeaders()});
     } 
 
     function getMapName(mapid) {
@@ -51,5 +64,6 @@ function apexService(config) {
         setDisplayView,
         getMapName,
         getStatsFromCode,
+        checkApiKey
     }
 }

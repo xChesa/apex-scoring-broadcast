@@ -22,29 +22,29 @@
           <div class="score-wrap">
             <div class="score-item score-index" :class="{ 'score-index-styled': styled }"> {{ score.index }} </div>
             <div v-if="mode == 'team'" class="score-item score-name" :class="{ 'score-name-styled': styled }">
-              <div class="team-name-character-wrapper" :class="{ 'team-name-wrapper-override': score.teamName.length > 14 }">
+              <div class="team-name-character-wrapper" :class="{ 'team-name-wrapper-override': score.name.length > 14 }">
+                <div class="team-name" :class="{ 'team-name-override': score.name.length > 14 }"> {{ score.name }} </div>
                 <template v-if="showCharacters">
-                <div class="team-name" :class="{ 'team-name-override': score.teamName.length > 14 }"> {{ score.teamName }} </div>
                 <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
-                  <!-- <div class="character-inline-block" v-for="character in getCharacters(score.teamName)" :key="character"> -->
+                  <!-- <div class="character-inline-block" v-for="character in getCharacters(score.name)" :key="character"> -->
                     <!-- <div class="character"> -->
-                      <img class="team-character" v-for="character in getCharacters(score.teamName)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
+                      <img class="team-character" v-for="character in getCharacters(score.name)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
                     <!-- </div> -->
                   <!-- </div> -->
                 </div>
                 </template>
               </div>
               <div class="score-player-names" v-if="mode == 'team'">
-                <span v-for="player in getPlayers(score.teamName)" :key="player.playerName">
+                <span v-for="player in getPlayers(score.name)" :key="player.name">
 
-                  {{ cleanPlayerName(score.teamName, player.playerName) }} &nbsp;</span>
+                  {{ cleanPlayerName(score.name, player.name) }} &nbsp;</span>
               </div>
             </div>
             <div v-else class="score-item score-name score-player-name padding-zero" :class="{ 'score-name-styled': styled }">
               <span v-if="mode == 'player' && showCharacters" class="character-wrap-player score-item" :class="{ 'character-wrap-styled': styled }">
                 <img v-for="character in score.characters || [score.characterName]" :key="character" height="70" :src="'/legend_icons/' + character + '.webp'">
               </span>
-              <span class="fix-player-name">{{cleanPlayerName(score.teamName, score.playerName) }}</span>
+              <span class="fix-player-name">{{score.name}}</span>
             </div>
             <div class="score-item score-value" :class="{ 'score-value-styled': styled }">
               <template v-if="display2">&nbsp;{{ score[display] }}&nbsp;</template>
@@ -98,7 +98,7 @@ export default {
 
 
       scores.forEach((score, index) => {
-        if (score.teamName || score.playerName) score.index = index + 1;
+        if (score.name || score.name) score.index = index + 1;
       });
 
       let start = scores.slice(0, 10);
@@ -125,7 +125,7 @@ export default {
       return player.replace(team + "_", "").replace(team, "").trim();
     },
     getPlayers(id) {
-      return (_.find(this.teamStats, stat => stat.overall_stats.teamName == id) || { player_stats: [] }).player_stats;
+      return (_.find(this.teamStats, stat => stat.overall_stats.name == id) || { player_stats: [] }).player_stats;
     },
     getDisplayName(display) {
       return displayName[display] || display;

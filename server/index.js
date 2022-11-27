@@ -5,16 +5,15 @@ const cors = require("cors");
 const history = require('connect-history-api-fallback');
 const app = express()
 const port = 3000;
+const {db} = require("./connectors/db");
+
+db.migrate.latest();
 
 // middleware
 app.use(express.json());
 app.use(cors());
 
 router(app);
-
-process.on('uncaughtException', function (err) {
-    console.log(err);
-})
 
 const staticFileMiddleware = express.static('dist');
 
@@ -29,3 +28,8 @@ app.use(staticFileMiddleware);
 app.listen(port, () => {
     console.log(`Your app is running at http://localhost:${port}`)
 })
+
+process.on('uncaughtException', function (err) {
+    console.log(err);
+})
+

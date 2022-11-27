@@ -5,12 +5,18 @@
         <template v-if="!eventId">
           <v-col sm="12" lg="12">
             <v-card>
-              <v-card-title>Tournament ID</v-card-title>
+              <v-card-title>Tournament Admin</v-card-title>
               <v-card-text>
-                <v-text-field v-model="eventIdForm" label="Tournament ID" @v-on:keyup.enter="eventIdSet"></v-text-field>
+                <v-text-field v-model="usernameForm" label="Username" @v-on:keyup="loginFailed = false"></v-text-field>
+                <v-text-field v-model="apiKeyForm" label="API Key" @v-on:keyup="loginFailed = false"></v-text-field>
+                <v-text-field v-model="eventIdForm" label="Tournament ID" @v-on:keyup="loginFailed = false" @v-on:keyup.enter="login"></v-text-field>
+
+                <v-alert v-show="loginFailed" dense type="error">
+                  Invalid API key
+                </v-alert>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="blue" @click="eventIdSet">Go</v-btn>
+                <v-btn color="blue" @click="login">Go</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -19,7 +25,7 @@
           <v-col sm="12" lg="12">
             <v-card>
               <v-card-title>Tournament: {{ eventId }}
-                <v-btn @click="eventIdForm = undefined; eventIdSet()" color="blue" class="ma-2">Change</v-btn>
+                <v-btn @click="changeEvent()" color="blue" class="ma-2">Change</v-btn>
               </v-card-title>
             </v-card>
           </v-col>
@@ -27,7 +33,7 @@
             <v-card>
               <v-card-title>Apex Scoring</v-card-title>
               <v-card-text>
-                <v-combobox v-model="round" label="Game" :items="[1,2,3,4,5,6]"></v-combobox>
+                <v-combobox v-model="round" label="Game" :items="[1, 2, 3, 4, 5, 6]"></v-combobox>
                 <v-text-field v-model="statsCode" label="Apex Stats Code"></v-text-field>
                 <v-expansion-panels>
                   <v-expansion-panel>
@@ -86,8 +92,8 @@
                 </v-row>
                 <v-select :items="displayOptions.round" v-model="displayChoices.round"></v-select>
                 <v-select :items="displayOptions.mode" v-model="displayChoices.mode" @change="
-                  this.displayChoices.display = undefined;
-                  this.displayChoices.display2 = undefined;
+  this.displayChoices.display = undefined;
+this.displayChoices.display2 = undefined;
                 "></v-select>
                 <v-select v-if="displayChoices.mode" :items="displayOptions.display[displayChoices.mode]"
                   v-model="displayChoices.display"></v-select>
@@ -96,7 +102,7 @@
                 <v-btn @click="updateDisplayView" color="blue" class="ma-2">Update</v-btn>
 
                 <div v-if="eventId" class="display-wrapper">
-                  <router-link target="_blank" :to="{name: 'display', params: {eventId}}">
+                  <router-link target="_blank" :to="{ name: 'display', params: { eventId } }">
                     <display class="display-viewport" :eventId="this.eventId"></display>
                   </router-link>
                 </div>
@@ -122,6 +128,9 @@ export default {
   data() {
     return {
       eventIdForm: undefined,
+      apiKeyForm: undefined,
+      usernameForm: undefined,
+      loginFailed: false,
       round: 1,
       statsCode: undefined,
       skipFetch: false,
@@ -192,9 +201,25 @@ export default {
       console.log("UDPATING", JSON.stringify(this.displayChoices), this.eventId)
       this.$apex.setDisplayView(this.eventId, this.displayChoices);
     },
-    async eventIdSet() {
-      this.$router.replace({ "name": "admin", params: { eventId: this.eventIdForm } });
+    async login() {
+      let valid = await this.$apex.checkApiKey(this.usernameForm, this.apiKeyForm);
+
+      if (valid) {
+        localStorage.setItem("organizer-key", this.apiKeyForm);
+        localStorage.setItem("organizer-username", this.usernameForm);
+        localStorage.setItem("eventId", this.eventIdForm);
+
+        this.$router.replace({ "name": "admin", params: { eventId: this.eventIdForm } });
+      } else {
+        this.loginFailed = true;
+        setTimeout(() => this.loginFailed = false, 3000);
+      }
     },
+    changeEvent() {
+      localStorage.removeItem("eventId");
+
+      this.$router.replace({ "name": "admin", params: { eventId: undefined } });
+    }
   },
   watch: {
     async statsCode() {
@@ -210,6 +235,15 @@ export default {
       if (options) {
         this.displayChoices = options;
       }
+    }
+
+    this.apiKeyForm = localStorage.getItem("organizer-key");
+    this.usernameForm = localStorage.getItem("organizer-username");
+
+    if (localStorage.getItem("eventId")) {
+      this.eventIdForm = localStorage.getItem("eventId");
+
+      await this.login();
     }
   }
 };
