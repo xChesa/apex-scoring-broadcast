@@ -3,9 +3,9 @@
         <div class="leaderboard-wrap">
             <v-row no-gutters>
                 <v-col cols="12" sm="3">
-                    <div class="round-select-wrap">
-                        <div v-for="r in roundList" :class="{ 'selected-round': r == round }" class="round-select" @click="setRound(r)" :key="r">
-                            {{ getRoundName(r) }}
+                    <div class="game-select-wrap">
+                        <div v-for="r in gameList" :class="{ 'selected-game': r == game }" class="game-select" @click="setGame(r)" :key="r">
+                            {{ getGameName(r) }}
                         </div>
                     </div>
                 </v-col>
@@ -22,45 +22,44 @@
 <script>
 import LeaderboardEntry from '../components/leaderboard/LeaderboardEntry.vue';
 export default {
-    props: ["organizer", "eventId", "round"],
+    props: ["organizer", "eventId", "game"],
     components: {
         LeaderboardEntry
     },
     data() {
         return {
             stats: [],
-            roundList: ["overall", "1", "2", "3", "4", "5", "6"]
+            gameList: ["overall", "1", "2", "3", "4", "5", "6"]
         }
     },
     methods: {
         async updateStats() {
-            let {count} = await this.$apex.getRoundCount(this.organizer, this.eventId);
-            this.roundList = this.buildRoundList(count);
+            let {count} = await this.$apex.getGameCount(this.organizer, this.eventId);
+            this.gameList = this.buildGameList(count);
 
-            this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.round);
+            this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.game);
         },
-        getRoundName(round) {
-            if (round != "overall") {
-                return "Game " + round;
+        getGameName(game) {
+            if (game != "overall") {
+                return "Game " + game;
             }
             return "Overall";
         },
-        setRound(round) {
-            this.$router.replace({ "name": "leaderboard", params: { round, organizer: this.organizer, eventId: this.eventId } });
+        setGame(game) {
+            this.$router.replace({ "name": "leaderboard", params: { game, organizer: this.organizer, eventId: this.eventId } });
         },
-        buildRoundList(count) {
+        buildGameList(count) {
             return new Array(count + 1).fill({}).map((i, index) => index == 0 ? "overall" : index);
         }
     },
     watch: {
-        round() {
+        game() {
             this.updateStats();
         }
     },
     mounted() {
-        console.log(this.organizer, this.eventId, this.round)
-        if (!this.round) {
-            this.setRound("overall");
+        if (!this.game) {
+            this.setGame("overall");
         } else {
             this.updateStats();
         }
@@ -72,7 +71,7 @@ export default {
 .overall-wrapper {
     background: black;
 }
-.round-select {
+.game-select {
     background: rgb(38, 31, 31);
     color: white;
     text-align: center;
@@ -81,7 +80,7 @@ export default {
     cursor: pointer;
 }
 
-.selected-round {
+.selected-game {
     background: rgb(151, 11, 11);
 }
 

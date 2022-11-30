@@ -8,7 +8,7 @@
                 </div>
             </div>
             <score-table :showCharacters="displayOptions.showCharacters" :styled="displayOptions.styled" :mode="displayOptions.mode"
-                :round="displayOptions.round" :display="displayOptions.display" :display2="displayOptions.display2"
+                :game="displayOptions.game" :display="displayOptions.display" :display2="displayOptions.display2"
                 :dark="displayOptions.dark" :header="displayOptions.header" :stats="stats"/>
         </div>
     </div>
@@ -33,8 +33,8 @@ export default {
         async updateScores() {
             this.displayOptions = await this.$apex.getDisplayView(this.organizer, this.eventId);
 
-            if (this.displayOptions.round && this.displayOptions.mode && this.displayOptions.display) {
-                this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.displayOptions.round);
+            if (this.displayOptions.game && this.displayOptions.mode && this.displayOptions.display) {
+                this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.displayOptions.game);
             }
         }
 
@@ -42,10 +42,10 @@ export default {
     computed: {
         title() {
             if (this.header) {
-                if (this.round == "overall") {
+                if (this.game == "overall") {
                     return "Leaderboard"
                 } else {
-                    return `Game ${this.round}`
+                    return `Game ${this.game}`
                 }
             } else {
                 return " "

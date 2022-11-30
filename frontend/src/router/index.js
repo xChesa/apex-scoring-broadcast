@@ -26,7 +26,7 @@ const routes = [
     props: true,
     children: [
       {
-        path: "leaderboard/:organizer/:eventId/:round?",
+        path: "leaderboard/:organizer/:eventId/:game?",
         name: "leaderboard",
         component: Leaderboard,
         props: true,

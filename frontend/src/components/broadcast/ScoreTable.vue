@@ -36,7 +36,6 @@
               </div>
               <div class="score-player-names" v-if="mode == 'team'">
                 <span v-for="player in getPlayers(score.teamId)" :key="player.name">
-
                   {{ cleanPlayerName(score.name, player.name) }} &nbsp;</span>
               </div>
             </div>

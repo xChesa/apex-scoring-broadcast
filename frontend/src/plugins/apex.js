@@ -5,6 +5,7 @@ const mapMap = {
     "mp_rr_tropic_island_mu1": "Storm Point (Season 13)",
     "mp_rr_desertlands_mu3": "Worlds Edge (Season 10)",
     "mp_rr_olympus_mu2": "Olympus (Season 12)",
+    "mp_rr_divided_moon": "Broken Moon (Season 15)"
 }
 
 export default {
@@ -33,19 +34,19 @@ function apexService(config) {
         return stats.data;
     }
 
-    async function getStats(organizer, eventId, round) {
-        let stats = await axios.get(config.baseUrl + "stats/" + organizer + "/" + eventId + "/" + round);
+    async function getStats(organizer, eventId, game) {
+        let stats = await axios.get(config.baseUrl + "stats/" + organizer + "/" + eventId + "/" + game);
         return stats.data;
     }
 
-    async function getRoundCount(organizer, eventId) {
+    async function getGameCount(organizer, eventId) {
         let stats = await axios.get(config.baseUrl + "count/" + organizer + "/" + eventId);
         return stats.data;
     }
 
-    async function generateStats(eventId, statsCode, round, startTime, skipFetch, killPoints, placementPoints) {
+    async function generateStats(eventId, statsCode, game, startTime, skipFetch, killPoints, placementPoints) {
         await axios.post(config.baseUrl + "stats", {
-            eventId, statsCode, round, startTime, killPoints, placementPoints, skipFetch
+            eventId, statsCode, game, startTime, killPoints, placementPoints, skipFetch
         }, {headers: getApiKeyHeaders()})
     }
 
@@ -70,6 +71,6 @@ function apexService(config) {
         getMapName,
         getStatsFromCode,
         checkApiKey,
-        getRoundCount
+        getGameCount
     }
 }

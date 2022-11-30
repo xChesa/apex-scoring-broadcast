@@ -33,7 +33,7 @@ const displayOptions = {
             "accuracy",
         ],
     },
-    round: ["overall", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+    game: ["overall", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
 }
 
 const invertedStats = ["position", "bestPlacement"]
@@ -68,14 +68,14 @@ function sortScores(scores, sortKey) {
 
 function getStatsByMode(teams, mode) {
     if (mode == "team") {
-        return teams.map(team => team.overall_stats);
+        return teams.map(team => ({ teamId: teams.id, ...team.overall_stats }));
     } else {
-        return teams.map(team => team.player_stats).flat();
+        return teams.map(team => ({ teamId: teams.id, ...team.player_stats })).flat();
     }
 }
 
 function getPlayersByTeam(teams, teamId) {
-    return (_.find(teams, stat => stat.id == teamId) || { player_stats: [] }).player_stats;
+    return (_.find(teams, stat => stat.teamId == teamId) || { player_stats: [] }).player_stats;
 }
 
 function getCharactersByTeam(teams, teamId) {

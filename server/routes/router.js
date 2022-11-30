@@ -39,7 +39,7 @@ module.exports = function router(app) {
     app.post("/stats", verifyOrganizerHeaders, async (req, res) => {
         const {
             eventId,
-            round,
+            game,
             statsCode,
             startTime,
             placementPoints, 
@@ -49,16 +49,16 @@ module.exports = function router(app) {
 
         if (!skipFetch) {
             const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
-            let game;
+            let gameStat;
             if (startTime)
-                game = allStats.find(({ match_start }) => match_start == startTime);
+                gameStat = allStats.find(({ match_start }) => match_start == startTime);
             else
-                game = allStats[0]
+                gameStat = allStats[0]
 
-            if (!game)
+            if (!gameStat)
                 return res.sendStats(404);
                     
-            await statsService.writeStats(req.organizer, eventId, round, game);
+            await statsService.writeStats(req.organizer.id, eventId, game, gameStat);
         }
         res.status(200).send();
     })
@@ -76,30 +76,30 @@ module.exports = function router(app) {
         res.send({count: result});
     })
 
-    app.get("/stats/:organizer/:eventId/:round", async (req, res) => {
+    app.get("/stats/:organizer/:eventId/:game", async (req, res) => {
         const {
             organizer,
             eventId,
-            round
+            game
         } = req.params;
-        const cacheKey = `stats:${organizer}-${eventId}-${round}`;
+        const cacheKey = `stats:${organizer}-${eventId}-${game}`;
 
         let cachedStats = await cache.get(cacheKey);
 
-        if (cachedStats) {
-            return res.send(cachedStats);
-        }
+        // if (cachedStats) {
+        //     return res.send(cachedStats);
+        // }
 
-        let stats = await statsService.getStats(organizer, eventId, round);
+        let stats = await statsService.getStats(organizer, eventId, game);
         
         if (!stats || stats.length == 0) {
             return res.send({});
         }
 
-        if (round == "overall") {
+        if (game == "overall") {
             stats = {
                 total: stats.length,
-                games: stats,
+                // games: stats,
                 teams: apexService.generateOverallStats(stats),
             }
         } else {

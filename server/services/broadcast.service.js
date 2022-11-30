@@ -4,7 +4,7 @@ const defaultDisplay = {
     "display": "score",
     "display2": "kills",
     "mode": "team",
-    "round": "overall",
+    "game": "overall",
     "styled": true,
     "header": true,
     "dark": true,

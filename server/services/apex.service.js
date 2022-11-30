@@ -25,6 +25,7 @@ module.exports = function Apex(config) {
 
         teams.forEach(key => {
             let teamStats = {
+                teamId: key,
                 overall_stats: {
                     position: 20,
                     score: 0,

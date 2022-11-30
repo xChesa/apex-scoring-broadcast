@@ -1,4 +1,3 @@
-const config = require("../config/config.json")
 const {db} = require("../connectors/db");
 const _ = require("lodash");
 
@@ -6,10 +5,11 @@ function assembleStatsDocuments(games, teams, players) {
     let teamsByGame = _(teams).groupBy("gameId").value();
     let playersByGame = _(players).groupBy(({ gameId }) => gameId).value();
 
+
     games.forEach(game => {
         game.teams = teamsByGame[game.id].map(team => {
             return {
-                id: team.teamId,
+                teamId: team.teamId,
                 name: team.name,
                 overall_stats: team,
                 player_stats: playersByGame[game.id].filter(player => player.teamId == team.teamId)
@@ -19,14 +19,14 @@ function assembleStatsDocuments(games, teams, players) {
     return games;
 }
 
-async function getStats(organizer, eventId, round) {
-    let where = round == "overall" ? { "organizers.username": organizer, eventId } : { "organizers.username": organizer, eventId, round };
+async function getStats(organizer, eventId, game) {
+    let where = game == "overall" ? { "o.username": organizer, eventId } : { "o.username": organizer, eventId, game };
     try {
         let games = await db("game")
-            .join("organizers", "game.organizer", "organizers.id")
+            .leftJoin({o: "organizers"}, "game.organizer", "o.id")
             .where(where)
-            .select("*");
-
+            .select("game.*", "o.username as organizer");
+                
         let teams = await db("team_game_stats").whereIn("gameId",  games.map(game => game.id))
         let players = await db("player_game_stats").whereIn("gameId", games.map(game => game.id))
         
@@ -36,18 +36,38 @@ async function getStats(organizer, eventId, round) {
     }
 }
 
-async function writeStats(organizer, eventId, round, data) {
+async function writeStats(organizer, eventId, game, data) {
     try {
         db.transaction(async trx => {
+            console.log({ organizer, eventId, game })
+            let previousGame = await trx("game").
+                where({ organizer, eventId })
+                .first("id");
+
+            if (previousGame) {
+                console.log("Overwriting previous game " + previousGame.id);
+                await trx("game")
+                    .where({ id: previousGame.id })
+                    .del();
+                
+                await trx("team_game_stats")
+                    .where({ gameId: previousGame.id })
+                    .del();
+                
+                await trx("player_game_stats")
+                    .where({ gameId: previousGame.id })
+                    .del();
+            }
+
             let gameResult = await trx("game").insert({
                 eventId,
-                round,
-                organizer: organizer.id,
+                game,
+                organizer: organizer,
                 match_start: data.match_start,
                 mid: data.mid,
                 map_name: data.map_name,
                 aim_assist_allowed: data.aim_assist_allowed,
-            }, ["id"]);
+            }, ["id"])
 
 
             let gameId = gameResult[0].id;
@@ -56,7 +76,6 @@ async function writeStats(organizer, eventId, round, data) {
                 return {
                     ...team.overall_stats,
                     teamId: team.id,
-                    round,
                     gameId: gameId,
                     name: team.name
                 }
@@ -64,12 +83,10 @@ async function writeStats(organizer, eventId, round, data) {
 
             let playerStats = data.teams.map(team =>
                 team.player_stats.map(player => {
-                    //console.log(player)
                     let playerData = {
                         ...player,
                         teamId: team.id,
                         playerId: player.nidHash,
-                        round, 
                         gameId
                     }
                     delete playerData.nidHash;
@@ -81,8 +98,8 @@ async function writeStats(organizer, eventId, round, data) {
             ).flat();
 
 
-            await db("team_game_stats").insert(teamStats);
-            await db("player_game_stats").insert(playerStats);
+            await trx("team_game_stats").insert(teamStats);
+            await trx("player_game_stats").insert(playerStats);
 
         });
     } catch (err) {
@@ -94,10 +111,10 @@ async function getGameCount(organizer, eventId) {
     try {
         let result = await db("game")
             .join("organizers", "game.organizer", "organizers.id")
-            .orderBy("round", "desc")
+            .orderBy("game", "desc")
             .where({"organizers.username": organizer, eventId})
-            .first("round");
-        return result.round;
+            .first("game");
+        return result.game;
     } catch (err) {
         console.error(err)
         return 0;

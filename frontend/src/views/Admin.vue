@@ -33,7 +33,7 @@
             <v-card>
               <v-card-title>Apex Scoring</v-card-title>
               <v-card-text>
-                <v-combobox v-model="round" label="Game" :items="[1, 2, 3, 4, 5, 6]"></v-combobox>
+                <v-combobox v-model="game" label="Game" :items="[1, 2, 3, 4, 5, 6]"></v-combobox>
                 <v-text-field v-model="statsCode" label="Apex Stats Code"></v-text-field>
                 <v-expansion-panels>
                   <v-expansion-panel>
@@ -90,7 +90,7 @@
                     <v-checkbox label="Show Characters" v-model="displayChoices.showCharacters"></v-checkbox>
                   </v-col>
                 </v-row>
-                <v-select :items="displayOptions.round" v-model="displayChoices.round"></v-select>
+                <v-select :items="displayOptions.game" v-model="displayChoices.game"></v-select>
                 <v-select :items="displayOptions.mode" v-model="displayChoices.mode" @change="
   this.displayChoices.display = undefined;
 this.displayChoices.display2 = undefined;
@@ -132,7 +132,7 @@ export default {
       apiKeyForm: undefined,
       usernameForm: undefined,
       loginFailed: false,
-      round: 1,
+      game: 1,
       statsCode: undefined,
       skipFetch: false,
       games: undefined,
@@ -146,7 +146,7 @@ export default {
         display: undefined,
         display2: undefined,
         header: true,
-        round: "overall",
+        game: "overall",
         dark: false,
       },
       displayOptions,
@@ -157,7 +157,7 @@ export default {
       this.$apex.generateStats(
         this.eventId,
         this.statsCode.trim(),
-        this.round,
+        this.game,
         this.selectedGame,
         this.skipFetch,
         this.killPoints,
