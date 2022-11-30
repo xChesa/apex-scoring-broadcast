@@ -14,5 +14,9 @@
             "min": 0, 
             "max": 10
         }
+    },
+    "redis": {
+        "host": "host.docker.internal",
+        "port": 6379
     }
 }

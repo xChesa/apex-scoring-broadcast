@@ -1,5 +1,5 @@
 <template>
-  <div class="overall-wrap" :class="{ 'overall-wrap-styled': styled }">
+  <div class="overall-wrap" v-if="(stats && stats.teams)" :class="{ 'overall-wrap-styled': styled }">
     <div class="table-wrap">
       <div class="row-wrap">
         <div class="column" v-for="index in 2" :key="index">
@@ -28,14 +28,14 @@
                 <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
                   <!-- <div class="character-inline-block" v-for="character in getCharacters(score.name)" :key="character"> -->
                     <!-- <div class="character"> -->
-                      <img class="team-character" v-for="character in getCharacters(score.name)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
+                      <img class="team-character" v-for="character in getCharacters(score.teamId)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
                     <!-- </div> -->
                   <!-- </div> -->
                 </div>
                 </template>
               </div>
               <div class="score-player-names" v-if="mode == 'team'">
-                <span v-for="player in getPlayers(score.name)" :key="player.name">
+                <span v-for="player in getPlayers(score.teamId)" :key="player.name">
 
                   {{ cleanPlayerName(score.name, player.name) }} &nbsp;</span>
               </div>
@@ -61,16 +61,8 @@
 
 <script>
 import _ from "lodash";
-const invertSort = ["position", "bestPlacement"]
-const displayName = {
-  "bestPlacement": "Placement",
-  "survivalTime": "Time Alive",
-  "bestGame": "Best Game",
-  "damageDealt": "Damage",
-  "bestKills": "Best Kills",
-  "revivesGiven": "Revives",
-  "respawnsGiven": "Respawns",
-}
+import { sortScores, getDisplayName, getStatsByMode, getCharactersByTeam, getPlayersByTeam } from "../../utils/statsUtils";
+
 const pad_array = function (arr, len, fill) {
   return arr.concat(Array(len).fill(fill)).slice(0, len);
 };
@@ -79,23 +71,9 @@ export default {
   props: ["stats", "display", "display2", "styled", "mode", "showCharacters"],
   computed: {
     sortedScores() {
-      let scores = this.scores.length < 20 ? pad_array(this.scores, 20, {}) : this.scores;
-      let sort = this.display;
-      if (this.display == "score") {
-        sort = scores[0].position ? "position" : "score"
-      }
-
-      scores = scores.sort((a, b) => {
-        if (invertSort.includes(sort)) {
-          if (a[sort] == "") return 1;
-          if (b[sort] == "") return -1;
-
-          return a[sort] - b[sort];
-        } else {
-          return b[sort] - a[sort];
-        }
-      });
-
+      let scores = sortScores(this.scoresByMode, this.display);
+      
+      scores = scores.length < 20 ? pad_array(this.scores, 20, {}) : scores;
 
       scores.forEach((score, index) => {
         if (score.name || score.name) score.index = index + 1;
@@ -105,33 +83,25 @@ export default {
       let end = scores.slice(10, 20);
       return _.zip(start, end).flat();
     },
-    scores() {
-      console.log(JSON.stringify(this.stats))
-      return this.teamStats.map((stat) => stat[this.computedMode]).flat();
+    teams() {
+      return this.stats.teams
     },
-    computedMode() {
-      let modeMap = {
-        team: "overall_stats",
-        player: "player_stats",
-      };
-      return modeMap[this.mode];
-    },
-    teamStats() {
-      return this.stats.teams || this.stats || [];
+    scoresByMode() {
+      return getStatsByMode(this.teams, this.mode)
     }
   },
   methods: {
     cleanPlayerName(team, player) {
       return player.replace(team + "_", "").replace(team, "").trim();
     },
-    getPlayers(id) {
-      return (_.find(this.teamStats, stat => stat.overall_stats.name == id) || { player_stats: [] }).player_stats;
-    },
     getDisplayName(display) {
-      return displayName[display] || display;
+      return getDisplayName(display);
     },
-    getCharacters(id) {
-      return _(this.getPlayers(id).map(player => player.characters || player.characterName)).zip().flattenDeep().uniq().value();
+    getPlayers(team) {
+      return getPlayersByTeam(this.teams, team);
+    },
+    getCharacters(team) {
+      return getCharactersByTeam(this.teams, team);
     }
   },
 };

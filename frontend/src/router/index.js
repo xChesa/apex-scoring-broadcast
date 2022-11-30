@@ -1,29 +1,37 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Admin from "../views/Admin";
-import Scoreboard from "../views/Scoreboard";
-import Display from "../views/Display";
-
+import Broadcast from "../views/Broadcast";
+import Public from "../views/Public";
+import Leaderboard from "../views/Leaderboard";
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/scoreboard/:eventId/:round/:mode/:display",
-    name: "Scoreboard",
-    component: Scoreboard,
+    path: "/broadcast/:organizer/:eventId",
+    name: "broadcast",
+    component: Broadcast,
     props: true,
   },
   {
-    path: "/broadcast/:eventId",
-    name: "display",
-    component: Display,
-    props: true,
-  },
-  {
-    path: '/admin/:eventId?',
+    path: '/admin/:organizer?/:eventId?',
     name: 'admin',
     component: Admin,
     props: true,
+  },
+  {
+    path: "/public",
+    name: "public",
+    component: Public,
+    props: true,
+    children: [
+      {
+        path: "leaderboard/:organizer/:eventId/:round?",
+        name: "leaderboard",
+        component: Leaderboard,
+        props: true,
+      }
+    ]
   },
 ]
 

@@ -40,7 +40,7 @@ module.exports = function Apex(config) {
                 if (stat[key]) {
                     let t = stat[key].overall_stats;
                     let overall_stats = teamStats.overall_stats;
-                    teamStats.name = key;
+                    teamStats.name = t.name;
                     if (!teamStats.overall_stats.name)
                         teamStats.overall_stats.name = t.name;
                     overall_stats.score += t.score;

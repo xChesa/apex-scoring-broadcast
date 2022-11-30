@@ -19,9 +19,13 @@ function assembleStatsDocuments(games, teams, players) {
     return games;
 }
 
-async function getStats(eventId, round) {
+async function getStats(organizer, eventId, round) {
+    let where = round == "overall" ? { "organizers.username": organizer, eventId } : { "organizers.username": organizer, eventId, round };
     try {
-        let games = await db("game").where(round == "overall" ? { eventId } : { eventId, round }).select("*");
+        let games = await db("game")
+            .join("organizers", "game.organizer", "organizers.id")
+            .where(where)
+            .select("*");
 
         let teams = await db("team_game_stats").whereIn("gameId",  games.map(game => game.id))
         let players = await db("player_game_stats").whereIn("gameId", games.map(game => game.id))
@@ -84,23 +88,25 @@ async function writeStats(organizer, eventId, round, data) {
     } catch (err) {
         console.error("Failed to insert game into db", err);
     }
-
-
-
-
-
-    // const path = getFilePath(eventId);
-
-    // fs.mkdirSync(path, { recursive: true });
-    // fs.writeFileSync(path + round + ".json", JSON.stringify(data));
 }
 
-function getFilePath(eventId) {
-    return config.statsPath + "/" + eventId + "/";
+async function getGameCount(organizer, eventId) {
+    try {
+        let result = await db("game")
+            .join("organizers", "game.organizer", "organizers.id")
+            .orderBy("round", "desc")
+            .where({"organizers.username": organizer, eventId})
+            .first("round");
+        return result.round;
+    } catch (err) {
+        console.error(err)
+        return 0;
+    }
 }
+
 
 module.exports = {
     writeStats,
     getStats,
-    getFilePath,
+    getGameCount
 }

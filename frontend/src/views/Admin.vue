@@ -102,8 +102,8 @@ this.displayChoices.display2 = undefined;
                 <v-btn @click="updateDisplayView" color="blue" class="ma-2">Update</v-btn>
 
                 <div v-if="eventId" class="display-wrapper">
-                  <router-link target="_blank" :to="{ name: 'display', params: { eventId } }">
-                    <display class="display-viewport" :eventId="this.eventId"></display>
+                  <router-link target="_blank" :to="{ name: 'broadcast', params: { eventId } }">
+                    <broadcast class="display-viewport" :organizer="organizer" :eventId="this.eventId"></broadcast>
                   </router-link>
                 </div>
               </v-card-text>
@@ -117,14 +117,15 @@ this.displayChoices.display2 = undefined;
 
 
 <script>
-import Display from "./Display.vue";
-import GameSelect from "../components/GameSelect.vue";
+import Broadcast from "./Broadcast.vue";
+import GameSelect from "../components/admin/GameSelect.vue";
+import { displayOptions } from "../utils/statsUtils";
 export default {
   components: {
-    Display,
+    Broadcast,
     GameSelect,
   },
-  props: ["eventId"],
+  props: ["organizer", "eventId"],
   data() {
     return {
       eventIdForm: undefined,
@@ -148,41 +149,7 @@ export default {
         round: "overall",
         dark: false,
       },
-      displayOptions: {
-        mode: ["team", "player"],
-        display: {
-          team: [
-            "score",
-            "kills",
-            "damageDealt",
-            "bestGame",
-            "bestPlacement",
-            "bestKills",
-            "revivesGiven",
-            "headshots",
-            "assists",
-            "respawnsGiven",
-            "hits",
-            "knockdowns",
-            "shots",
-            "accuracy"
-          ],
-          player: [
-            "kills",
-            "damageDealt",
-            "survivalTime",
-            "revivesGiven",
-            "headshots",
-            "assists",
-            "respawnsGiven",
-            "hits",
-            "knockdowns",
-            "shots",
-            "accuracy",
-          ],
-        },
-        round: ["overall", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-      },
+      displayOptions,
     };
   },
   methods: {
@@ -198,8 +165,7 @@ export default {
       );
     },
     updateDisplayView() {
-      console.log("UDPATING", JSON.stringify(this.displayChoices), this.eventId)
-      this.$apex.setDisplayView(this.eventId, this.displayChoices);
+      this.$apex.setDisplayView(this.organizer, this.eventId, this.displayChoices);
     },
     async login() {
       let valid = await this.$apex.checkApiKey(this.usernameForm, this.apiKeyForm);
@@ -209,7 +175,7 @@ export default {
         localStorage.setItem("organizer-username", this.usernameForm);
         localStorage.setItem("eventId", this.eventIdForm);
 
-        this.$router.replace({ "name": "admin", params: { eventId: this.eventIdForm } });
+        this.$router.replace({ "name": "admin", params: { organizer: this.usernameForm, eventId: this.eventIdForm } });
       } else {
         this.loginFailed = true;
         setTimeout(() => this.loginFailed = false, 3000);
@@ -231,7 +197,7 @@ export default {
   },
   async mounted() {
     if (this.eventId) {
-      let options = await this.$apex.getDisplayView(this.eventId);
+      let options = await this.$apex.getDisplayView(this.organizer, this.eventId);
       if (options) {
         this.displayChoices = options;
       }

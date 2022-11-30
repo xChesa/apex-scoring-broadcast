@@ -33,8 +33,13 @@ function apexService(config) {
         return stats.data;
     }
 
-    async function getStats(eventId, round) {
-        let stats = await axios.get(config.baseUrl + "stats/event/" + eventId + "/round/" + round);
+    async function getStats(organizer, eventId, round) {
+        let stats = await axios.get(config.baseUrl + "stats/" + organizer + "/" + eventId + "/" + round);
+        return stats.data;
+    }
+
+    async function getRoundCount(organizer, eventId) {
+        let stats = await axios.get(config.baseUrl + "count/" + organizer + "/" + eventId);
         return stats.data;
     }
 
@@ -44,13 +49,13 @@ function apexService(config) {
         }, {headers: getApiKeyHeaders()})
     }
 
-    async function getDisplayView(eventId) {
-        let data = await axios.get(config.baseUrl + "display/" + eventId);
+    async function getDisplayView(organizer, eventId) {
+        let data = await axios.get(config.baseUrl + "display/" + organizer+ "/" + eventId);
         return data.data;
     }
 
-    async function setDisplayView(eventId, display) {
-        await axios.post(config.baseUrl + "display/" + eventId, display, {headers: getApiKeyHeaders()});
+    async function setDisplayView(organizer, eventId, display) {
+        await axios.post(config.baseUrl + "display/" + organizer + "/" + eventId, display, {headers: getApiKeyHeaders()});
     } 
 
     function getMapName(mapid) {
@@ -64,6 +69,7 @@ function apexService(config) {
         setDisplayView,
         getMapName,
         getStatsFromCode,
-        checkApiKey
+        checkApiKey,
+        getRoundCount
     }
 }

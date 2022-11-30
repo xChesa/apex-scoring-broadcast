@@ -1,43 +1,48 @@
 <template>
     <div>
-        <div class="scoreboard-wrap"  :class="{ 'scoreboard-wrap-styled': styled, 'white-text': dark }">
+        <div class="scoreboard-wrap" :class="{ 'scoreboard-wrap-styled': displayOptions.styled, 'white-text': displayOptions.dark }">
             <div class="scoreboard-header-wrap">
-                <div class="scoreboard-header"  :class="{ 'scoreboard-header-styled': styled }">
-                    <div v-if="styled" class="scoreboard-header-backing"></div>
-                    <div class="scoreboard-header-text">{{title}}</div>
+                <div class="scoreboard-header" :class="{ 'scoreboard-header-styled': displayOptions.styled }">
+                    <div v-if="displayOptions.styled" class="scoreboard-header-backing"></div>
+                    <div class="scoreboard-header-text">{{ title }}</div>
                 </div>
             </div>
-            <score-table :showCharacters="showCharacters" :stats="stats" :display2="display2" :display="display" :mode="mode" :styled="styled"/>
+            <score-table :showCharacters="displayOptions.showCharacters" :styled="displayOptions.styled" :mode="displayOptions.mode"
+                :round="displayOptions.round" :display="displayOptions.display" :display2="displayOptions.display2"
+                :dark="displayOptions.dark" :header="displayOptions.header" :stats="stats"/>
         </div>
     </div>
 </template>
 
 <script>
-import ScoreTable from "../components/ScoreTable.vue"
+import ScoreTable from "../components/broadcast/ScoreTable.vue"
 export default {
     components: {
         ScoreTable,
     },
-    props: ["eventId", "round", "mode", "display", "display2", "styled", "dark", "header", "showCharacters"],
+    props: ["organizer", "eventId"],
     data() {
         return {
             stats: [],
             interval: 0,
+            displayOptions: {}
         }
     },
 
     methods: {
         async updateScores() {
-            if(this.round && this.mode && this.display) {
-                this.stats = await this.$apex.getStats(this.eventId, this.round);
-                console.log(this.stats)
+            this.displayOptions = await this.$apex.getDisplayView(this.organizer, this.eventId);
+
+            if (this.displayOptions.round && this.displayOptions.mode && this.displayOptions.display) {
+                this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.displayOptions.round);
             }
         }
+
     },
     computed: {
         title() {
-            if(this.header) {
-                if(this.round == "overall") {
+            if (this.header) {
+                if (this.round == "overall") {
                     return "Leaderboard"
                 } else {
                     return `Game ${this.round}`
@@ -50,7 +55,9 @@ export default {
     async mounted() {
         await this.$nextTick();
         this.updateScores();
-        this.interval = setInterval(() => this.updateScores(), 3000);
+        this.interval = setInterval(async () => {
+            this.updateScores()
+        }, 3000);
     },
     destroyed() {
         clearInterval(this.interval);
@@ -60,9 +67,9 @@ export default {
 
 <style scoped>
 .scoreboard-wrap {
-  position: absolute;
-  width: 1920px;
-  height: 1080px;
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
 }
 
 .scoreboard-wrap-styled {
@@ -76,7 +83,7 @@ export default {
     width: 100%;
 }
 
-.white-text { 
+.white-text {
     color: white;
 }
 
@@ -104,5 +111,4 @@ export default {
     border-top: 80px solid rgb(151, 11, 11);
     border-right: 40px solid transparent;
 }
-
 </style>
