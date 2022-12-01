@@ -3,8 +3,7 @@ const _ = require("lodash");
 
 function assembleStatsDocuments(games, teams, players) {
     let teamsByGame = _(teams).groupBy("gameId").value();
-    let playersByGame = _(players).groupBy(({ gameId }) => gameId).value();
-
+    let playersByGame = _(players).groupBy("gameId").value();
 
     games.forEach(game => {
         game.teams = teamsByGame[game.id].map(team => {
@@ -41,7 +40,7 @@ async function writeStats(organizer, eventId, game, data) {
         db.transaction(async trx => {
             console.log({ organizer, eventId, game })
             let previousGame = await trx("game").
-                where({ organizer, eventId })
+                where({ organizer, eventId, game})
                 .first("id");
 
             if (previousGame) {

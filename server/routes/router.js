@@ -59,6 +59,9 @@ module.exports = function router(app) {
                 return res.sendStats(404);
                     
             await statsService.writeStats(req.organizer.id, eventId, game, gameStat);
+            await cache.del(`stats:${req.organizer.username}-${eventId}-${game}`);
+            await cache.del(`stats:${req.organizer.username}-${eventId}-overall`);
+
         }
         res.status(200).send();
     })
@@ -86,9 +89,9 @@ module.exports = function router(app) {
 
         let cachedStats = await cache.get(cacheKey);
 
-        // if (cachedStats) {
-        //     return res.send(cachedStats);
-        // }
+        if (cachedStats) {
+            return res.send(cachedStats);
+        } 
 
         let stats = await statsService.getStats(organizer, eventId, game);
         
@@ -99,14 +102,14 @@ module.exports = function router(app) {
         if (game == "overall") {
             stats = {
                 total: stats.length,
-                // games: stats,
+                games: stats,
                 teams: apexService.generateOverallStats(stats),
             }
         } else {
             stats = stats[0];
         }
 
-        cache.put(cacheKey, stats);
+        cache.put(cacheKey, stats, 300); //cache for 5m
         res.send(stats);
     })
 

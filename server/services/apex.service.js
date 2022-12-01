@@ -8,7 +8,7 @@ module.exports = function Apex(config) {
     console.log("Using ", config.statsUrl, " as Respawn API")
 
     async function getStatsFromCode(statsCode, placementPoints, killPoints) {
-        console.log("Getting stats from ", statsCode);
+        console.log("Getting stats from", statsCode);
 
         let stats = await getStatsFromEA(statsCode);
         stats = stats.matches.sort((a, b) => b.match_start - a.match_start);
@@ -18,7 +18,7 @@ module.exports = function Apex(config) {
     }
 
     function generateOverallStats(stats) {
-        stats = stats.map(stat => _.keyBy(stat.teams, "id"));
+        stats = stats.map(stat => _.keyBy(stat.teams, "teamId"));
 
         let overall = [];
         let teams = _(stats).map(m => Object.keys(m)).flatten().uniq().value();
@@ -98,7 +98,8 @@ module.exports = function Apex(config) {
                     score: "",
                     kills: "",
                 },
-                player_stats: []
+                player_stats: [],
+                teamId: i,
             }
         }
         return overall;

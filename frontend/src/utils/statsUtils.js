@@ -68,9 +68,9 @@ function sortScores(scores, sortKey) {
 
 function getStatsByMode(teams, mode) {
     if (mode == "team") {
-        return teams.map(team => ({ teamId: teams.id, ...team.overall_stats }));
+        return teams.map(team => ({ teamId: team.teamId, ...team.overall_stats }));
     } else {
-        return teams.map(team => ({ teamId: teams.id, ...team.player_stats })).flat();
+        return teams.map(team => ({ teamId: team.teamId, ...team.player_stats })).flat();
     }
 }
 
