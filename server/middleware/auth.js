@@ -5,13 +5,12 @@ async function verifyOrganizerHeaders(req, res, next) {
     let key = req.header("x-organizer-key");
 
     let organizer = await auth.getOrganizer(username, key);
-    console.log(organizer)
 
     if (organizer) {
         req.organizer = organizer;
         next();
     } else {
-        console.log("Bad user/key", username, key);
+        console.log("Bad user/key", username);
         res.sendStatus(403);
     }
 }

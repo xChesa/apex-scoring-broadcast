@@ -43,6 +43,7 @@ exports.up = function(knex) {
             "knockdowns" integer,
             "shots" integer,
             "hits" integer,
+            "survivalTime" integer,
             PRIMARY KEY(id)
         );
 

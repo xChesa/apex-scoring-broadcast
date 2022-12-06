@@ -1,4 +1,4 @@
-const {db} = require("../connectors/db");
+const { db } = require("../connectors/db");
 const _ = require("lodash");
 
 function assembleStatsDocuments(games, teams, players) {
@@ -22,16 +22,44 @@ async function getStats(organizer, eventId, game) {
     let where = game == "overall" ? { "o.username": organizer, eventId } : { "o.username": organizer, eventId, game };
     try {
         let games = await db("game")
-            .leftJoin({o: "organizers"}, "game.organizer", "o.id")
+            .leftJoin({ o: "organizers" }, "game.organizer", "o.id")
             .where(where)
             .select("game.*", "o.username as organizer");
-                
-        let teams = await db("team_game_stats").whereIn("gameId",  games.map(game => game.id))
+
+        let teams = await db("team_game_stats").whereIn("gameId", games.map(game => game.id))
         let players = await db("player_game_stats").whereIn("gameId", games.map(game => game.id))
-        
+
         return assembleStatsDocuments(games, teams, players);
     } catch (err) {
         console.error(err);
+    }
+}
+
+async function deleteStats(organizer, eventId, game) {
+    try {
+        db.transaction(async trx => {
+            let previousGame = await trx("game").
+                where({ organizer, eventId, game })
+                .first("id");
+
+            if (previousGame) {
+                console.log("Deleting game " + previousGame.id);
+                await trx("game")
+                    .where({ id: previousGame.id })
+                    .del();
+
+                await trx("team_game_stats")
+                    .where({ gameId: previousGame.id })
+                    .del();
+
+                await trx("player_game_stats")
+                    .where({ gameId: previousGame.id })
+                    .del();
+            }
+        })
+    } catch (err) {
+        console.error("Error deleting stats", err);
+        throw err;
     }
 }
 
@@ -39,24 +67,7 @@ async function writeStats(organizer, eventId, game, data) {
     try {
         db.transaction(async trx => {
             console.log({ organizer, eventId, game })
-            let previousGame = await trx("game").
-                where({ organizer, eventId, game})
-                .first("id");
-
-            if (previousGame) {
-                console.log("Overwriting previous game " + previousGame.id);
-                await trx("game")
-                    .where({ id: previousGame.id })
-                    .del();
-                
-                await trx("team_game_stats")
-                    .where({ gameId: previousGame.id })
-                    .del();
-                
-                await trx("player_game_stats")
-                    .where({ gameId: previousGame.id })
-                    .del();
-            }
+            deleteStats(organizer, eventId, game);
 
             let gameResult = await trx("game").insert({
                 eventId,
@@ -111,7 +122,7 @@ async function getGameCount(organizer, eventId) {
         let result = await db("game")
             .join("organizers", "game.organizer", "organizers.id")
             .orderBy("game", "desc")
-            .where({"organizers.username": organizer, eventId})
+            .where({ "organizers.username": organizer, eventId })
             .first("game");
         return result.game;
     } catch (err) {
@@ -124,5 +135,6 @@ async function getGameCount(organizer, eventId) {
 module.exports = {
     writeStats,
     getStats,
-    getGameCount
+    getGameCount,
+    deleteStats
 }

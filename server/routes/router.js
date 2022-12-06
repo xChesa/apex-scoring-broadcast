@@ -5,10 +5,15 @@ config.statsUrl = process.argv[2] || config.statsUrl;
 const { verifyOrganizerHeaders } = require("../middleware/auth");
 const apexService = new require("../services/apex.service")(config);
 const authService = require("../services/auth.service");
-const broadcastService = require("../services/broadcast.service");
+const adminService = require("../services/admin.service");
 const cache = require("../services/cache.service");
 
 module.exports = function router(app) {
+
+    async function deleteCache(username, eventId, game) {
+        await cache.del(`stats:${username}-${eventId}-${game}`);
+        await cache.del(`stats:${username}-${eventId}-overall`);
+    }
 
     app.get("/mock", (req, res) => {
         res.json(mockStats)
@@ -26,14 +31,18 @@ module.exports = function router(app) {
         })
     })
 
-    app.post("/display/:organizer/:eventId", verifyOrganizerHeaders, (req, res) => {
-        broadcastService.setDisplaySettings(req.params.organizer, req.params.eventId, req.body);
+    app.post("/settings/broadcast/:organizer/:eventId", verifyOrganizerHeaders, (req, res) => {
+        adminService.setBroadcastSettings(req.organizer.id, req.params.organizer, req.params.eventId, req.body);
         res.sendStatus(200);
     })
 
-    app.get("/display/:organizer/:eventId", async (req, res) => {
-        let result = await broadcastService.getDisplaySettings(req.params.organizer, req.params.eventId);
+    app.get("/settings/broadcast/:organizer/:eventId", async (req, res) => {
+        let result = await adminService.getBroadcastSettings(req.params.organizer, req.params.eventId);
         res.send(result);
+    })
+
+    app.get("/stats/code/:statsCode", verifyOrganizerHeaders, async (req, res) => {
+        res.send(await apexService.getStatsFromCode(req.params.statsCode));
     })
 
     app.post("/stats", verifyOrganizerHeaders, async (req, res) => {
@@ -59,15 +68,9 @@ module.exports = function router(app) {
                 return res.sendStats(404);
                     
             await statsService.writeStats(req.organizer.id, eventId, game, gameStat);
-            await cache.del(`stats:${req.organizer.username}-${eventId}-${game}`);
-            await cache.del(`stats:${req.organizer.username}-${eventId}-overall`);
-
+            await deleteCache(req.organizer.username, eventId, game);
         }
         res.status(200).send();
-    })
-
-    app.get("/stats/code/:statsCode", verifyOrganizerHeaders, async (req, res) => {
-        res.send(await apexService.getStatsFromCode(req.params.statsCode));
     })
 
     app.get("/count/:organizer/:eventId", async (req, res) => {
@@ -111,6 +114,19 @@ module.exports = function router(app) {
 
         cache.put(cacheKey, stats, 300); //cache for 5m
         res.send(stats);
+    })
+
+    app.delete("/stats/:organizer/:eventId/:game", verifyOrganizerHeaders, async (req, res) => {
+        const {
+            organizer,
+            eventId,
+            game
+        } = req.params;
+
+        await statsService.deleteStats(req.organizer.id, eventId, game);
+        await deleteCache(organizer, eventId, game);
+
+        res.sendStatus(200);
     })
 
 }

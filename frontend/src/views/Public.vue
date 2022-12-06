@@ -1,15 +1,17 @@
 <template>
-    <div class="public-wrapper">
-        <div class="public-header">
-            Public Leaderboard
+    <v-app>
+        <div class="public-wrapper">
+            <div class="public-header">
+                Public Leaderboard
+            </div>
+            <router-view />
         </div>
-        <router-view/>
-    </div>
+    </v-app>
 </template>
 
 <script>
 export default {
-    
+
 }
 </script>
 <style>

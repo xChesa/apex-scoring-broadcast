@@ -50,13 +50,17 @@ function apexService(config) {
         }, {headers: getApiKeyHeaders()})
     }
 
-    async function getDisplayView(organizer, eventId) {
-        let data = await axios.get(config.baseUrl + "display/" + organizer+ "/" + eventId);
+    async function deleteStats(organizer, eventId, game) {
+        await axios.delete(config.baseUrl + "stats/" + organizer + "/" + eventId + "/" + game, { headers: getApiKeyHeaders() });
+    }
+
+    async function getBroadcastSettings(organizer, eventId) {
+        let data = await axios.get(config.baseUrl + "settings/broadcast/" + organizer+ "/" + eventId);
         return data.data;
     }
 
-    async function setDisplayView(organizer, eventId, display) {
-        await axios.post(config.baseUrl + "display/" + organizer + "/" + eventId, display, {headers: getApiKeyHeaders()});
+    async function setBroadcastSettings(organizer, eventId, display) {
+        await axios.post(config.baseUrl + "settings/broadcast/" + organizer + "/" + eventId, display, {headers: getApiKeyHeaders()});
     } 
 
     function getMapName(mapid) {
@@ -66,11 +70,12 @@ function apexService(config) {
     return {
         getStats,
         generateStats,
-        getDisplayView,
-        setDisplayView,
+        getBroadcastSettings,
+        setBroadcastSettings,
         getMapName,
         getStatsFromCode,
         checkApiKey,
-        getGameCount
+        getGameCount,
+        deleteStats,
     }
 }

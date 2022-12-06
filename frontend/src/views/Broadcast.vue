@@ -31,7 +31,7 @@ export default {
 
     methods: {
         async updateScores() {
-            this.displayOptions = await this.$apex.getDisplayView(this.organizer, this.eventId);
+            this.displayOptions = await this.$apex.getBroadcastSettings(this.organizer, this.eventId);
 
             if (this.displayOptions.game && this.displayOptions.mode && this.displayOptions.display) {
                 this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.displayOptions.game);
@@ -41,11 +41,11 @@ export default {
     },
     computed: {
         title() {
-            if (this.header) {
-                if (this.game == "overall") {
+            if (this.displayOptions.header) {
+                if (this.displayOptions.game == "overall") {
                     return "Leaderboard"
                 } else {
-                    return `Game ${this.game}`
+                    return `Game ${this.displayOptions.game}`
                 }
             } else {
                 return " "
