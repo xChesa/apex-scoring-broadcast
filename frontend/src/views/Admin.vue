@@ -50,6 +50,9 @@
                 <v-tab-item>
                   <broadcast-tab :organizer="organizer" :eventId="eventId"></broadcast-tab>
                 </v-tab-item>
+                <v-tab-item>
+                  <public-tab :organizer="organizer" :eventId="eventId"></public-tab>
+                </v-tab-item>
               </v-tabs-items>
             </v-card-text>
           </v-card>
@@ -64,11 +67,13 @@
 <script>
 import GameTab from "../components/admin/GameTab.vue"
 import BroadcastTab from "../components/admin/BroadcastTab.vue"
+import PublicTab from "../components/admin/PublicTab.vue"
 
 export default {
   components: {
     BroadcastTab,
     GameTab,
+    PublicTab,
   },
   props: ["organizer", "eventId"],
   data() {

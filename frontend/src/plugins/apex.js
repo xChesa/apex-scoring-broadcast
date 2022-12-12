@@ -63,6 +63,16 @@ function apexService(config) {
         await axios.post(config.baseUrl + "settings/broadcast/" + organizer + "/" + eventId, display, {headers: getApiKeyHeaders()});
     } 
 
+
+    async function getPublicSettings(organizer, eventId) {
+        let data = await axios.get(config.baseUrl + "settings/public/" + organizer + "/" + eventId);
+        return data.data;
+    }
+
+    async function setPublicSettings(organizer, eventId, display) {
+        await axios.post(config.baseUrl + "settings/public/" + organizer + "/" + eventId, display, { headers: getApiKeyHeaders() });
+    } 
+
     function getMapName(mapid) {
         return mapMap[mapid] || mapid;
     }
@@ -72,6 +82,8 @@ function apexService(config) {
         generateStats,
         getBroadcastSettings,
         setBroadcastSettings,
+        getPublicSettings,
+        setPublicSettings,
         getMapName,
         getStatsFromCode,
         checkApiKey,

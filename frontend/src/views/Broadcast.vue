@@ -11,6 +11,7 @@
                 :game="displayOptions.game" :display="displayOptions.display" :display2="displayOptions.display2"
                 :dark="displayOptions.dark" :header="displayOptions.header" :stats="stats"/>
         </div>
+        <div class="credit" :class="{ dark: displayOptions.dark }">@Double0negative</div>
     </div>
 </template>
 
@@ -65,7 +66,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .scoreboard-wrap {
     position: absolute;
     width: 1920px;
@@ -110,5 +111,17 @@ export default {
     top: 0;
     border-top: 80px solid rgb(151, 11, 11);
     border-right: 40px solid transparent;
+}
+
+.credit {
+    position: absolute;
+    left: 1770px;
+    top: 1040px;
+    color: white;
+    opacity: .4;
+
+    .dark {
+        color: black;
+    }
 }
 </style>

@@ -41,6 +41,16 @@ module.exports = function router(app) {
         res.send(result);
     })
 
+    app.post("/settings/public/:organizer/:eventId", verifyOrganizerHeaders, (req, res) => {
+        adminService.setPublicSettings(req.organizer.id, req.params.organizer, req.params.eventId, req.body);
+        res.sendStatus(200);
+    })
+
+    app.get("/settings/public/:organizer/:eventId", async (req, res) => {
+        let result = await adminService.getPublicSettings(req.params.organizer, req.params.eventId);
+        res.send(result);
+    })
+
     app.get("/stats/code/:statsCode", verifyOrganizerHeaders, async (req, res) => {
         res.send(await apexService.getStatsFromCode(req.params.statsCode));
     })

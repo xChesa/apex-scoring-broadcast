@@ -17,43 +17,76 @@ const checkBroadcast = {
     display2: undefined,
 }
 
-function getBroadcastKey(org, event) {
-    return `DISPLAY:${org}-${event}`;
+const defaultPublic = {
+    title: ''
+}
+
+function getCacheKey(org, event, option) {
+    return `SETTINGS:${org}-${event}-${option}`;
+}
+
+async function getResultAndSetCache(result, def, org, event, option) {
+    let ret = undefined;
+    if (result) {
+        ret = result[option];
+    } else {
+        ret = def;
+    }
+    await cache.put(getCacheKey(org, event, option), JSON.stringify(ret), 300)
+    return ret;
 }
 
 async function setBroadcastSettings(organizer, orgName, eventId, settings) {
-    let broadcast = {};
-    Object.keys(defaultBroadcast).forEach(key => broadcast[key] = settings[key] || checkBroadcast[key]);
+    console.log(settings);
+    let broadcast = {}
+    Object.keys(defaultBroadcast).forEach(key => broadcast[key] = (settings[key] != undefined) ? settings[key] : checkBroadcast[key]);
 
-    await db("admin_settings")
-        .insert({ organizer, eventId, broadcast: JSON.stringify(broadcast) })
-        .onConflict(["organizer", "eventId"])
-        .merge();
-
-    cache.del(getBroadcastKey(orgName, eventId));
+    return await setSettings(organizer, orgName, eventId, broadcast, "broadcast")
 }
 
 async function getBroadcastSettings(org, event) {
-    let broadcast = await cache.get(getBroadcastKey(org, event));
-    if (broadcast) {
-        broadcast = JSON.parse(broadcast);
+    return await getSettings(org, event, "broadcast", defaultBroadcast);
+}
+
+async function setPublicSettings(organizer, orgName, eventId, settings) {
+    let public = {}
+    Object.keys(defaultPublic).forEach(key => public[key] = (settings[key] != undefined) ? settings[key] : defaultPublic[key]);
+
+    return await setSettings(organizer, orgName, eventId, public, "public");
+}
+
+async function getPublicSettings(org, event) {
+    return await getSettings(org, event, "public", defaultPublic)
+}
+
+async function setSettings(organizer, orgName, eventId, settings, option) {
+    console.log(settings);
+    await db("admin_settings")
+        .insert({ organizer, eventId, [option]: JSON.stringify(settings) })
+        .onConflict(["organizer", "eventId"])
+        .merge();
+
+    cache.del(getCacheKey(orgName, eventId, option));
+}
+
+async function getSettings(org, event, option, def) {
+    let ret = await cache.get(getCacheKey(org, event, option));
+    if (ret) {
+        ret = JSON.parse(ret);
     } else {
         let result = await db("admin_settings")
             .join("organizers", "organizers.id", "admin_settings.organizer")
-            .where({ "username": org })
-            .first("broadcast");
+            .where({ "username": org, eventId: event })
+            .first("*");
         
-        if (result) {
-            broadcast = result.broadcast;
-        } else {
-            broadcast = defaultBroadcast;
-        }
-        await cache.put(getBroadcastKey(org, event), JSON.stringify(broadcast), 300)
+        ret = await getResultAndSetCache(result, def, org, event, option)
     }
-    return broadcast;
+    return ret;
 }
 
 module.exports = {
     setBroadcastSettings,
     getBroadcastSettings,
+    getPublicSettings,
+    setPublicSettings,
 }

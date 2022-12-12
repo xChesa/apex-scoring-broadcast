@@ -17,20 +17,19 @@ const displayOptions = {
             "hits",
             "knockdowns",
             "shots",
-            "accuracy"
         ],
         player: [
             "kills",
             "damageDealt",
-            "survivalTime",
-            "revivesGiven",
-            "headshots",
-            "assists",
-            "respawnsGiven",
-            "hits",
             "knockdowns",
+            "assists",
+            "survivalTime",
+            "headshots",
+            "hits",
             "shots",
-            "accuracy",
+            "respawnsGiven",
+            "revivesGiven",
+
         ],
     },
     game: ["overall", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
@@ -39,7 +38,7 @@ const displayOptions = {
 const invertedStats = ["position", "bestPlacement"]
 const statDisplayMapping = {
     "bestPlacement": "Best Placement",
-    "survivalTime": "Time Alive",
+    "survivalTime": "Time",
     "bestGame": "Best Game",
     "damageDealt": "Damage",
     "bestKills": "Best Kills",
@@ -70,7 +69,7 @@ function getStatsByMode(teams, mode) {
     if (mode == "team") {
         return teams.map(team => ({ teamId: team.teamId, ...team.overall_stats }));
     } else {
-        return teams.map(team => ({ teamId: team.teamId, ...team.player_stats })).flat();
+        return teams.map(team => [...team.player_stats]).flat();
     }
 }
 
