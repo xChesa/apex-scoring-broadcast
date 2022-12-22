@@ -1,4 +1,4 @@
-const mockStats = require("../mock/eastats3.json")
+
 const statsService = require("../services/stats.service")
 const config = require("../config/config.json")
 config.statsUrl = process.argv[2] || config.statsUrl;
@@ -16,6 +16,7 @@ module.exports = function router(app) {
     }
 
     app.get("/mock", (req, res) => {
+        const mockStats = require("../mock/eastats3.json")
         res.json(mockStats)
     })
 
