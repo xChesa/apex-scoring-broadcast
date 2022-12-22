@@ -1,11 +1,16 @@
-echo Enter private match API endpoint: 
-read endpoint
+# echo Enter private match API endpoint: 
+# read endpoint
 cd frontend
-npm install
-npm run build
+# npm install
+# npm run build
+rm -rf ../server/dist
 mv ./dist ../server/
 
 cd ../server
 npm install
-clear
-node index.js %endpoint%
+
+echo "Done installing, Building.."
+
+cd ..
+docker build . -t stats-server
+
