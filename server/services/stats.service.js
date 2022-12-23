@@ -19,12 +19,11 @@ function assembleStatsDocuments(games, teams, players) {
 }
 
 async function getStats(organizer, eventId, game) {
-    let where = game == "overall" ? { "o.username": organizer, eventId } : { "o.username": organizer, eventId, game };
+    let where = game == "overall" ? { organizer, eventId } : { organizer, eventId, game };
     try {
         let games = await db("game")
-            .leftJoin({ o: "organizers" }, "game.organizer", "o.id")
             .where(where)
-            .select("game.*", "o.username as organizer");
+            .select("*");
 
         let teams = await db("team_game_stats").whereIn("gameId", games.map(game => game.id))
         let players = await db("player_game_stats").whereIn("gameId", games.map(game => game.id))
@@ -67,11 +66,24 @@ async function writeStats(organizer, eventId, game, data) {
     try {
         db.transaction(async trx => {
             console.log({ organizer, eventId, game })
-            deleteStats(organizer, eventId, game);
+            await deleteStats(organizer, eventId, game);
+
+            let matchId = await trx("match").where({
+                organizer, eventId
+            }).first("id");
+
+            if (!matchId) {
+                matchId = await trx("match").insert({ organizer, eventId }, ["id"]);
+                matchId = matchId[0];
+            }
+
+            matchId = matchId.id;
+
 
             let gameResult = await trx("game").insert({
                 eventId,
                 game,
+                matchId,
                 organizer: organizer,
                 match_start: data.match_start,
                 mid: data.mid,
@@ -120,9 +132,8 @@ async function writeStats(organizer, eventId, game, data) {
 async function getGameCount(organizer, eventId) {
     try {
         let result = await db("game")
-            .join("organizers", "game.organizer", "organizers.id")
             .orderBy("game", "desc")
-            .where({ "organizers.username": organizer, eventId })
+            .where({ organizer, eventId })
             .first("game");
         return result.game;
     } catch (err) {
@@ -131,10 +142,31 @@ async function getGameCount(organizer, eventId) {
     }
 }
 
+async function getLatest() {
+    try {
+        let matches = await db("match").orderBy("id", "desc").limit(10).select("*");
+
+        if (matches) {
+            let stats = await Promise.all(matches.map(match => new Promise(async (res) => {
+                let stats = await getStats(match.organizer, match.eventId, "overall");
+                res({ ...match, stats })
+            })));
+            return stats;
+        } else {
+            return [];
+        }
+       
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    }
+}
+
 
 module.exports = {
     writeStats,
     getStats,
     getGameCount,
-    deleteStats
+    deleteStats,
+    getLatest,
 }

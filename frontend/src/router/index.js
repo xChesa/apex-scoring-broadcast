@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Admin from "../views/Admin";
 import Broadcast from "../views/Broadcast";
-import Public from "../views/Public";
+import Index from "../views/Index";
+import Stats from "../views/Stats";
 import Leaderboard from "../views/PublicLeaderboard";
 
 import Standings from "../components/leaderboard/Standings";
@@ -12,6 +13,12 @@ import PlayerStandings from "../components/leaderboard/PlayerStandings";
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: "/",
+    name: "index",
+    component: Index,
+    props: true,
+  },
   {
     path: "/broadcast/:organizer/:eventId",
     name: "broadcast",
@@ -25,9 +32,9 @@ const routes = [
     props: true,
   },
   {
-    path: "/public/:organizer/:eventId/",
-    name: "public",
-    component: Public,
+    path: "/stats/:organizer/:eventId/",
+    name: "stats",
+    component: Stats,
     props: true,
     children: [
       {

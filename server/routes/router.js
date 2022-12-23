@@ -89,7 +89,10 @@ module.exports = function router(app) {
             organizer,
             eventId,
         } = req.params;
-        let result = await statsService.getGameCount(organizer, eventId);
+
+        let orgId = await authService.getOrganizerId(organizer)
+
+        let result = await statsService.getGameCount(orgId, eventId);
         res.send({count: result});
     })
 
@@ -107,7 +110,8 @@ module.exports = function router(app) {
             return res.send(cachedStats);
         } 
 
-        let stats = await statsService.getStats(organizer, eventId, game);
+        let orgId = await authService.getOrganizerId(organizer)
+        let stats = await statsService.getStats(orgId, eventId, game);
         
         if (!stats || stats.length == 0) {
             return res.send({});
@@ -140,4 +144,22 @@ module.exports = function router(app) {
         res.sendStatus(200);
     })
 
+    app.get("/stats/latest", async (req, res) => {
+        let matches = await statsService.getLatest();
+        
+        if (matches) {
+            let stats = matches.map(match => {
+                console.log(match)
+                return {
+                    id: match.id,
+                    organizer: match.organizer,
+                    eventId: match.eventId,
+                    top3: apexService.generateOverallStats(match.stats).slice(0, 3).map(team => team.overall_stats)
+                }
+            });
+            res.send(stats);
+        }
+        
+
+    })
 }

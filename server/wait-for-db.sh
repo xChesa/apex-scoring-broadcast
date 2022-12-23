@@ -1,2 +1,2 @@
-sleep 5 # TODO: wait for db more intelligently 
+sleep 0 # TODO: wait for db more intelligently 
 node ./index.js

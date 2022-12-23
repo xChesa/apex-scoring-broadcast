@@ -9,6 +9,12 @@ async function getOrganizer(username, key) {
     return result[0];
 }
 
+async function getOrganizerId(username) {
+    let result = await db("organizers").where({ username }).first("id");
+    return result.id;
+}
+
 module.exports = {
     getOrganizer,
+    getOrganizerId,
 }

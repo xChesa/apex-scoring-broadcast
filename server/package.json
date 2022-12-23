@@ -9,7 +9,7 @@
   "author": "Double0negative",
   "license": "ISC",
   "dependencies": {
-    "apex-scoring": "git+https://github.com/superleaguegaming/apex-scoring.git",
+    "axios": "^1.2.1",
     "connect-history-api-fallback": "^1.6.0",
     "cors": "^2.8.5",
     "eslint-plugin-vue": "^8.2.0",
