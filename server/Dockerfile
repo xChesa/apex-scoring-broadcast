@@ -2,8 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --only=production
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn build:production
 
 COPY . .
 

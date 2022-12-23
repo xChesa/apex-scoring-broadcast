@@ -1,10 +1,9 @@
 # build stage
 FROM node:16-alpine as build-stage
 WORKDIR /app
-COPY ./frontend/package*.json /app/
-RUN pwd
-RUN ls
-RUN npm install
+COPY ./frontend/package.json /app/
+COPY ./frontend/yarn.lock /app/
+RUN yarn build:production
 COPY ./frontend .
 RUN npm run build
 
