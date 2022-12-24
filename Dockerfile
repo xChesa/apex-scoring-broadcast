@@ -3,7 +3,7 @@ FROM node:18-alpine as build-stage
 WORKDIR /app
 COPY ./frontend/package.json /app/
 COPY ./frontend/yarn.lock /app/
-RUN yarn install --production=true
+RUN yarn install
 COPY ./frontend .
 RUN npm run build
 
