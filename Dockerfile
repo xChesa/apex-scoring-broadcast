@@ -1,5 +1,5 @@
 # build stage
-FROM node:16-alpine as build-stage
+FROM node:18-alpine as build-stage
 WORKDIR /app
 COPY ./frontend/package.json /app/
 COPY ./frontend/yarn.lock /app/
