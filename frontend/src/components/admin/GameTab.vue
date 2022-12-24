@@ -116,7 +116,7 @@ export default {
 				this.killPoints,
 				this.placementPoints.split(",").map(n => parseInt(n)),
 			);
-			this.updateStats();
+			await this.updateStats();
 		},
 		async updateStats() {
 			this.stats = await this.$apex.getStats(this.organizer, this.eventId, "overall");

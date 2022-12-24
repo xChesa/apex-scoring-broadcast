@@ -1,14 +1,16 @@
 <template>
     <v-app>
         <div class="public-wrapper">
+            <NavBar></NavBar>
             <div class="public-header">
-                <div class="title">{{publicSettings.title}}</div>
+                <div class="title">{{title}}</div>
             </div>
             <!-- <v-toolbar class="text-center">
                 <div class="toolbar-link-container">
                     <router-link class="toolbar-link" :to="{ name: 'leaderboard.standings', params: $props }">Standings</router-link>
                 </div>
             </v-toolbar> -->
+
             <router-view />
         </div>
         <div class="credit">Created by <a target="_blank" href="https://twitter.com/Double0_">@Double0negative</a></div>
@@ -16,8 +18,12 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar"
 export default {
     props: ["organizer", "eventId"],
+    components: {
+        NavBar
+    },
     data() {
         return {
             publicSettings: {}
@@ -31,6 +37,11 @@ export default {
                     this.publicSettings = options;
                 }
             }
+        }
+    },
+    computed: {
+        title() {
+            return this.publicSettings.title || this.organizer + " - " + this.eventId
         }
     },
     async mounted() {
@@ -47,9 +58,10 @@ body {
 }
 
 .public-header {
-    height: 200px;
+    height: 150px;
     color: white;
     background: $third-tone;
+    text-transform: capitalize;
 }
 
 ::v-deep .toolbar-link-container {
@@ -69,7 +81,7 @@ body {
     height: 80%;
 }
 
-::v-deep .router-link-active {
+::v-deep .router-link-exact-active {
     border-bottom: 2px solid $primary;
 }
 

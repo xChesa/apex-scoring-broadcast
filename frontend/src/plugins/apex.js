@@ -73,6 +73,11 @@ function apexService(config) {
         await axios.post(config.baseUrl + "settings/public/" + organizer + "/" + eventId, display, { headers: getApiKeyHeaders() });
     } 
 
+    async function getLatest() {
+        let data = await axios.get(config.baseUrl + "stats/latest");
+        return data.data;
+    } 
+
     function getMapName(mapid) {
         return mapMap[mapid] || mapid;
     }
@@ -89,5 +94,6 @@ function apexService(config) {
         checkApiKey,
         getGameCount,
         deleteStats,
+        getLatest
     }
 }

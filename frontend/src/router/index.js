@@ -4,11 +4,11 @@ import Admin from "../views/Admin";
 import Broadcast from "../views/Broadcast";
 import Index from "../views/Index";
 import Stats from "../views/Stats";
-import Leaderboard from "../views/PublicLeaderboard";
+import Standings from "../components/stats/Standings";
 
-import Standings from "../components/leaderboard/Standings";
-import TeamStandings from "../components/leaderboard/TeamStandings";
-import PlayerStandings from "../components/leaderboard/PlayerStandings";
+import Scoreboard from "../components/stats/standings/Scoreboard";
+import TeamStandings from "../components/stats/standings/TeamStandings";
+import PlayerStandings from "../components/stats/standings/PlayerStandings";
 
 Vue.use(VueRouter)
 
@@ -38,27 +38,27 @@ const routes = [
     props: true,
     children: [
       {
-        path: "leaderboard/:game?",
-        name: "leaderboard",
-        component: Leaderboard,
+        path: "standings/:game?",
+        name: "standings",
+        component: Standings,
         props: true,
-        redirect: { name: "leaderboard.standings" },
+        redirect: { name: "standings.scoreboard" },
         children: [
           {
-            name: "leaderboard.standings",
-            path: "standings",
-            component: Standings,
+            path: "scoreboard",
+            name: "standings.scoreboard",
+            component: Scoreboard,
             props: true,
           },
           {
             path: "team-standings",
-            name: "leaderboard.team-standings",
+            name: "standings.team",
             component: TeamStandings,
             props: true,
           },
           {
             path: "player-standings",
-            name: "leaderboard.player-standings",
+            name: "standings.player",
             component: PlayerStandings,
             props: true,
           }

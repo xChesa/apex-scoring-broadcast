@@ -1,12 +1,13 @@
 <template>
     <div v-if="stats && stats.teams">
         <v-data-table class="standing-table" :items-per-page="-1" hide-default-footer :headers="headers" :items="playerStats" dense>
-            <template v-slot:item.no="{ index }">{{ index + 1}}</template></v-data-table>
+            <template v-slot:item.no="{ index }">{{ index + 1}}</template>
+        </v-data-table>
     </div>
 </template>
 
 <script>
-import { displayOptions, getDisplayName, getStatsByMode } from '../../utils/statsUtils';
+import { displayOptions, getDisplayName, getStatsByMode } from '@/utils/statsUtils';
 export default {
     props: ["stats"],
     data() {

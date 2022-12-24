@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { displayOptions, getDisplayName, getStatsByMode } from '../../utils/statsUtils';
+import { displayOptions, getDisplayName, getStatsByMode } from '@/utils/statsUtils';
 export default {
     props: ["stats"],
     data() {

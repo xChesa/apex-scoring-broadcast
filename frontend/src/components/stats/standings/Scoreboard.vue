@@ -33,9 +33,9 @@
                         <v-row no-gutters>
                             <v-col class="entry-player" v-for="player in team.player_stats" :key="player.id">
                                 <template v-if="player.characters"><img  class="team-character"
-                                    v-for="character in player.characters" :key="character" height="15"
+                                    v-for="character in player.characters" :key="character" height="18"
                                     :src="'/legend_icons/' + character + '.webp'"></template>
-                                <img v-else class="team-character" height="15"
+                                <img v-else class="team-character" height="20"
                                     :src="'/legend_icons/' + player.characterName + '.webp'">
                                     &nbsp;{{ player.name }} ({{player.kills}})
                             </v-col>
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { displayOptions, getDisplayName } from '../../utils/statsUtils';
+import { displayOptions, getDisplayName } from '@/utils/statsUtils';
 export default {
     props: ["stats"],
     data() {
@@ -135,7 +135,7 @@ export default {
 
 .entry-sub {
     background: $second-tone;
-    font-size: .7em;
+    font-size: .8em;
 }
 
 .table-header {

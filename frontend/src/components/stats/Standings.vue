@@ -5,11 +5,11 @@
             <v-toolbar class="text-center">
                 <div class="toolbar-link-container">
                     <router-link class="toolbar-link"
-                        :to="{ name: 'leaderboard.standings', params: $props }">Standings</router-link>
+                        :to="{ name: 'standings.scoreboard', params: $props }">Scoreboard</router-link>
                     <router-link class="toolbar-link"
-                        :to="{ name: 'leaderboard.player-standings', params: $props }">Player
+                        :to="{ name: 'standings.player', params: $props }">Player
                         Standings</router-link>
-                    <router-link class="toolbar-link" :to="{ name: 'leaderboard.team-standings', params: $props }">Team
+                    <router-link class="toolbar-link" :to="{ name: 'standings.team', params: $props }">Team
                         Standings</router-link>
                 </div>
             </v-toolbar>

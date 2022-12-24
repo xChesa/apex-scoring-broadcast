@@ -262,6 +262,10 @@ export default {
   text-align: right;
 }
 
+.score-header {
+  text-transform: capitalize;
+}
+
 .table-wrap {
   position: relative;
   top: 200px;

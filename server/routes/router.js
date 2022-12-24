@@ -62,25 +62,25 @@ module.exports = function router(app) {
             game,
             statsCode,
             startTime,
-            placementPoints, 
+            placementPoints,
             killPoints,
-            skipFetch,
         } = req.body;
 
-        if (!skipFetch) {
-            const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
-            let gameStat;
-            if (startTime)
-                gameStat = allStats.find(({ match_start }) => match_start == startTime);
-            else
-                gameStat = allStats[0]
+        const allStats = await apexService.getStatsFromCode(statsCode, placementPoints, killPoints);
+        let gameStat;
+        if (startTime)
+            gameStat = allStats.find(({ match_start }) => match_start == startTime);
+        else
+            gameStat = allStats[0]
 
-            if (!gameStat)
-                return res.sendStats(404);
-                    
-            await statsService.writeStats(req.organizer.id, eventId, game, gameStat);
-            await deleteCache(req.organizer.username, eventId, game);
-        }
+        if (!gameStat)
+            return res.sendStats(404);
+        
+        console.log(JSON.stringify(gameStat));
+
+        await statsService.writeStats(req.organizer.id, eventId, game, gameStat);
+        await deleteCache(req.organizer.username, eventId, game);
+
         res.status(200).send();
     })
 
@@ -93,7 +93,7 @@ module.exports = function router(app) {
         let orgId = await authService.getOrganizerId(organizer)
 
         let result = await statsService.getGameCount(orgId, eventId);
-        res.send({count: result});
+        res.send({ count: result });
     })
 
     app.get("/stats/:organizer/:eventId/:game", async (req, res) => {
@@ -108,11 +108,11 @@ module.exports = function router(app) {
 
         if (cachedStats) {
             return res.send(cachedStats);
-        } 
+        }
 
         let orgId = await authService.getOrganizerId(organizer)
         let stats = await statsService.getStats(orgId, eventId, game);
-        
+
         if (!stats || stats.length == 0) {
             return res.send({});
         }
@@ -145,21 +145,30 @@ module.exports = function router(app) {
     })
 
     app.get("/stats/latest", async (req, res) => {
+        const cacheKey = "latest";
+
+        let cachedLatest = await cache.get(cacheKey);
+        if (cachedLatest) {
+            return res.send(cachedLatest);
+        }
+
         let matches = await statsService.getLatest();
-        
+        let settings = await Promise.all(matches.map(async match => adminService.getPublicSettings(match.username, match.eventId)));
+
         if (matches) {
-            let stats = matches.map(match => {
-                console.log(match)
+            let stats = matches.map((match, id) => {
                 return {
                     id: match.id,
-                    organizer: match.organizer,
+                    organizer: match.username,
                     eventId: match.eventId,
+                    title: (settings[id] || {}).title,
                     top3: apexService.generateOverallStats(match.stats).slice(0, 3).map(team => team.overall_stats)
                 }
             });
+
+            cache.put(cacheKey, stats, 300);
             res.send(stats);
         }
-        
 
     })
 }

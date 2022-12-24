@@ -33,7 +33,7 @@ export default {
     },
     computed: {
         publicLink() {
-            return window.location.origin + this.$router.resolve({ name: 'leaderboard', params: { eventId: this.eventId, organizer: this.organizer, game: "overall" } }).href;
+            return window.location.origin + this.$router.resolve({ name: 'standings', params: { eventId: this.eventId, organizer: this.organizer, game: "overall" } }).href;
         }
     },
     methods: {

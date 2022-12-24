@@ -12,7 +12,7 @@
                   <v-card-text>
                     <v-text-field v-model="usernameForm" label="Username"
                       @v-on:keyup="loginFailed = false"></v-text-field>
-                    <v-text-field v-model="apiKeyForm" label="API Key" @v-on:keyup="loginFailed = false"></v-text-field>
+                    <v-text-field v-model="apiKeyForm" type="password" label="API Key" @v-on:keyup="loginFailed = false"></v-text-field>
                     <v-text-field v-model="eventIdForm" label="Tournament ID" @v-on:keyup="loginFailed = false"
                       @v-on:keyup.enter="login"></v-text-field>
 

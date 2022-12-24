@@ -36,7 +36,7 @@ async function getStats(organizer, eventId, game) {
 
 async function deleteStats(organizer, eventId, game) {
     try {
-        db.transaction(async trx => {
+        await db.transaction(async trx => {
             let previousGame = await trx("game").
                 where({ organizer, eventId, game })
                 .first("id");
@@ -64,7 +64,7 @@ async function deleteStats(organizer, eventId, game) {
 
 async function writeStats(organizer, eventId, game, data) {
     try {
-        db.transaction(async trx => {
+        await db.transaction(async trx => {
             console.log({ organizer, eventId, game })
             await deleteStats(organizer, eventId, game);
 
@@ -119,7 +119,6 @@ async function writeStats(organizer, eventId, game, data) {
                 })
             ).flat();
 
-
             await trx("team_game_stats").insert(teamStats);
             await trx("player_game_stats").insert(playerStats);
 
@@ -144,7 +143,11 @@ async function getGameCount(organizer, eventId) {
 
 async function getLatest() {
     try {
-        let matches = await db("match").orderBy("id", "desc").limit(10).select("*");
+        let matches = await db("match")
+            .join("organizers", "organizers.id", "match.organizer")
+            .orderBy("match.id", "desc")
+            .limit(8)
+            .select("*");
 
         if (matches) {
             let stats = await Promise.all(matches.map(match => new Promise(async (res) => {
