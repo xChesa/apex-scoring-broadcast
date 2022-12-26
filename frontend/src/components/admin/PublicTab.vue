@@ -17,7 +17,7 @@
         <v-card>
             <v-card-title>Link</v-card-title>
             <v-card-text>
-                <v-form><v-text-field solo :value="publicLink" readonly></v-text-field></v-form>
+                <v-form><v-text-field solo :value="publicUrl" readonly></v-text-field></v-form>
             </v-card-text>
         </v-card>
     </v-container>
@@ -28,12 +28,13 @@ export default {
     props: ["eventId", "organizer"],
     data() {
         return {
-            publicData: {}
+            publicData: {},
+            publicUrl: undefined,
         }
     },
     computed: {
-        publicLink() {
-            return window.location.origin + this.$router.resolve({ name: 'standings', params: { eventId: this.eventId, organizer: this.organizer, game: "overall" } }).href;
+        publicFullUrl() {
+           return window.location.origin + this.$router.resolve({ name: 'standings', params: { eventId: this.eventId, organizer: this.organizer, game: "overall" } }).href;
         }
     },
     methods: {
@@ -47,10 +48,16 @@ export default {
                     this.publicData = options;
                 }
             }
+        },
+        async getShortLink() {
+            let {hash} = await this.$apex.getShortLink(this.publicFullUrl);
+            return `${window.location.origin}/${hash}`;
         }
     },
     async mounted() {
         await this.refreshPublicOptions();
+        this.publicUrl = this.publicFullUrl;
+        this.publicUrl = await this.getShortLink();
     }
 }
 </script>

@@ -7,7 +7,7 @@ import apex from "./plugins/apex";
 Vue.config.productionTip = false
 
 Vue.use(apex, {
-  baseUrl: "http://localhost:3000/",
+  baseUrl: "/api/",
 })
 
 new Vue({

@@ -7,7 +7,8 @@ const apexService = new require("../services/apex.service")(config);
 const authService = require("../services/auth.service");
 const adminService = require("../services/admin.service");
 const cache = require("../services/cache.service");
-
+const shortLinkService = require("../services/short_link.service.js");
+const SHORT_LINK_PREFIX = "_";
 module.exports = function router(app) {
 
     async function deleteCache(username, eventId, game) {
@@ -168,6 +169,33 @@ module.exports = function router(app) {
 
             cache.put(cacheKey, stats, 300);
             res.send(stats);
+        }
+    })
+
+
+    app.get("/short_link", async (req, res) => {
+        const url = req.query.url;
+        console.log("url", url);
+        let hash = await shortLinkService.getHash(url);
+
+        if (!hash) {
+            hash = await shortLinkService.createShortLink(url);
+        }
+
+        hash = SHORT_LINK_PREFIX + hash
+
+        res.send({ hash });
+    })
+
+    app.get("/" + SHORT_LINK_PREFIX  +"*", async (req, res) => {
+        const hash = req.params[0];
+
+        let url = await shortLinkService.getUrl(hash);
+        if (url) {
+            await shortLinkService.incrementVisit(hash);
+            res.redirect(url);  
+        } else {
+            res.sendStats(404);
         }
 
     })

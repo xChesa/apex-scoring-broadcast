@@ -78,6 +78,11 @@ function apexService(config) {
         return data.data;
     } 
 
+    async function getShortLink(url) {
+        let data = await axios.get(config.baseUrl + "short_link?url=" + url);
+        return data.data;
+    } 
+
     function getMapName(mapid) {
         return mapMap[mapid] || mapid;
     }
@@ -94,6 +99,7 @@ function apexService(config) {
         checkApiKey,
         getGameCount,
         deleteStats,
-        getLatest
+        getLatest,
+        getShortLink
     }
 }
