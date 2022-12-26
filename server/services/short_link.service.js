@@ -25,8 +25,8 @@ async function getHash(url) {
         let result = db("short_link").where({ url }).first("hash");
         if (result) {
             hash = result.hash;
-            await cache.put(getCacheKey(hash), url);
-            await cache.put(getCacheKey(url), hash);
+            await cache.put(getCacheKey(hash), url, 300);
+            await cache.put(getCacheKey(url), hash, 300);
         }
     }
     return hash;
@@ -36,8 +36,8 @@ async function createShortLink(url) {
     let hash = generateRandomString();
 
     await db("short_link").insert({ hash, url });
-    await cache.put(getCacheKey(hash), url);
-    await cache.put(getCacheKey(url), hash);
+    await cache.put(getCacheKey(hash), url, 300);
+    await cache.put(getCacheKey(url), hash, 300);
 
     return hash;
 }
@@ -49,8 +49,8 @@ async function getUrl(hash) {
         let result = db("short_link").where({ hash }).first("url");
         if (result) {
             url = result.url;
-            await cache.put(getCacheKey(hash), url);
-            await cache.put(getCacheKey(url), hash);
+            await cache.put(getCacheKey(hash), url, 300);
+            await cache.put(getCacheKey(url), hash, 300);
         }
     }
     return url;
