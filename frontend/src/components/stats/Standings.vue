@@ -18,9 +18,12 @@
                 <v-row no-gutters>
                     <v-col cols="12" sm="2">
                         <div class="game-select-wrap">
-                            <div v-for="r in gameList" :class="{ 'selected-game': r == game }" class="game-select"
-                                @click="setGame(r)" :key="r">
-                                {{ getGameName(r) }}
+                            <div :class="{ 'selected-game': 'overall' == game }" class="game-select py-4" @click="setGame('overall')"> Overall</div>
+                            <div v-for="g in gameList" :class="{ 'selected-game': g.game == game }" class="game-select pa-2"
+                                @click="setGame(g.game)" :key="g.id">
+                                <div class="game">Game {{ g.game }}</div>
+                                <div class="map">{{ $apex.getMapNameShort(g.map_name) }}</div>
+                                <div class="date sub">{{ getDate(g.match_start * 1000) }} {{ getTime(g.match_start * 1000) }}</div>
                             </div>
                         </div>
                     </v-col>
@@ -41,27 +44,25 @@ export default {
     data() {
         return {
             stats: [],
-            gameList: ["overall", "1", "2", "3", "4", "5", "6"]
+            gameList: []
         }
     },
     methods: {
         async updateStats() {
-            let { count } = await this.$apex.getGameCount(this.organizer, this.eventId);
-            this.gameList = this.buildGameList(count);
-
+            this.gameList = await this.$apex.getGameList(this.organizer, this.eventId);
             this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.game);
-        },
-        getGameName(game) {
-            if (game != "overall") {
-                return "Game " + game;
-            }
-            return "Overall";
         },
         setGame(game) {
             this.$router.replace({ params: { game, organizer: this.organizer, eventId: this.eventId } });
         },
         buildGameList(count) {
             return new Array(count + 1).fill({}).map((i, index) => index == 0 ? "overall" : index);
+        },
+        getDate(timestamp) {
+            return Intl.DateTimeFormat(navigator.language, { month: 'short', day: 'numeric', year: "numeric" }).format(new Date(timestamp))
+        },
+        getTime(timestamp) {
+            return Intl.DateTimeFormat(navigator.language, { hour: "numeric", minute: "numeric", hour12: true, timeZoneName: "short" }).format(new Date(timestamp));
         }
     },
     watch: {
@@ -84,6 +85,19 @@ export default {
     background: $third-tone;
     max-width: 1200px !important;
     margin: auto;
+}
+
+.date {
+    text-transform: capitalize;
+}
+
+.map {
+    font-size: .8em;
+}
+
+.sub {
+    font-size: .6em;
+    opacity: .7;
 }
 
 .game-select {

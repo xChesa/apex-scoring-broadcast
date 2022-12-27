@@ -106,7 +106,7 @@ module.exports = function router(app) {
         res.status(200).send();
     })
 
-    app.get("/count/:organizer/:eventId", async (req, res) => {
+    app.get("/games/:organizer/:eventId", async (req, res) => {
         const {
             organizer,
             eventId,
@@ -114,8 +114,8 @@ module.exports = function router(app) {
 
         let orgId = await authService.getOrganizerId(organizer)
 
-        let result = await statsService.getGameCount(orgId, eventId);
-        res.send({ count: result });
+        let result = await statsService.getGameList(orgId, eventId);
+        res.send(result);
     })
 
 

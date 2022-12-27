@@ -128,13 +128,13 @@ async function writeStats(organizer, eventId, game, data) {
     }
 }
 
-async function getGameCount(organizer, eventId) {
+async function getGameList(organizer, eventId) {
     try {
         let result = await db("game")
-            .orderBy("game", "desc")
+            .orderBy("game", "asc")
             .where({ organizer, eventId })
-            .first("game");
-        return result.game;
+            .select("*");
+        return result;
     } catch (err) {
         console.error(err)
         return 0;
@@ -169,7 +169,7 @@ async function getLatest() {
 module.exports = {
     writeStats,
     getStats,
-    getGameCount,
+    getGameList,
     deleteStats,
     getLatest,
 }

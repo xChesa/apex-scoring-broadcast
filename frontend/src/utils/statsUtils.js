@@ -46,7 +46,6 @@ const statDisplayMapping = {
     "respawnsGiven": "Respawns",
 }
 
-
 function sortScores(scores, sortKey) {
     if (sortKey == "score") {
         sortKey = scores[0].position ? "position" : "score"
@@ -84,8 +83,6 @@ function getCharactersByTeam(teams, teamId) {
 function getDisplayName(name) {
     return statDisplayMapping[name] || name;
 }
-
-
 
 module.exports = {
     invertedStats,

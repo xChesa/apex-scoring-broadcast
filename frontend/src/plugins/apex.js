@@ -8,6 +8,14 @@ const mapMap = {
     "mp_rr_divided_moon": "Broken Moon (Season 15)"
 }
 
+const mapMapShort = {
+    "mp_rr_canyonlands_hu": "Kings Canyon",
+    "mp_rr_tropic_island_mu1": "Storm Point",
+    "mp_rr_desertlands_mu3": "Worlds Edge",
+    "mp_rr_olympus_mu2": "Olympus",
+    "mp_rr_divided_moon": "Broken Moon"
+}
+
 export default {
     install(Vue, options) {
         Vue.prototype.$apex = apexService(options);
@@ -39,8 +47,8 @@ function apexService(config) {
         return stats.data;
     }
 
-    async function getGameCount(organizer, eventId) {
-        let stats = await axios.get(config.baseUrl + "count/" + organizer + "/" + eventId);
+    async function getGameList(organizer, eventId) {
+        let stats = await axios.get(config.baseUrl + "games/" + organizer + "/" + eventId);
         return stats.data;
     }
 
@@ -62,7 +70,6 @@ function apexService(config) {
     async function setBroadcastSettings(organizer, eventId, display) {
         await axios.post(config.baseUrl + "settings/broadcast/" + organizer + "/" + eventId, display, {headers: getApiKeyHeaders()});
     } 
-
 
     async function getPublicSettings(organizer, eventId) {
         let data = await axios.get(config.baseUrl + "settings/public/" + organizer + "/" + eventId);
@@ -87,6 +94,10 @@ function apexService(config) {
         return mapMap[mapid] || mapid;
     }
 
+    function getMapNameShort(mapid) {
+        return mapMapShort[mapid] || mapid;
+    }
+
     return {
         config,
         getStats,
@@ -98,9 +109,10 @@ function apexService(config) {
         getMapName,
         getStatsFromCode,
         checkApiKey,
-        getGameCount,
+        getGameList,
         deleteStats,
         getLatest,
-        getShortLink
+        getShortLink,
+        getMapNameShort,
     }
 }
