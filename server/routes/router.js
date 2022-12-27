@@ -16,6 +16,26 @@ module.exports = function router(app) {
         await cache.del(`stats:${username}-${eventId}-overall`);
     }
 
+    async function getStats(organizer, eventId, game) {
+        let orgId = await authService.getOrganizerId(organizer)
+        let stats = await statsService.getStats(orgId, eventId, game);
+
+        if (!stats || stats.length == 0) {
+            return {};
+        }
+
+        if (game == "overall") {
+            stats = {
+                total: stats.length,
+                games: stats,
+                teams: apexService.generateOverallStats(stats),
+            }
+        } else {
+            stats = stats[0];
+        }
+        return stats;
+    }
+
     app.get("/mock", (req, res) => {
         const mockStats = require("../mock/eastats3.json")
         res.json(mockStats)
@@ -97,6 +117,30 @@ module.exports = function router(app) {
         res.send({ count: result });
     })
 
+
+    app.get("/stats/:organizer/:eventId/summary", async (req, res) => {
+        const {
+            organizer,
+            eventId,
+        } = req.params;
+        const cacheKey = `stats:${organizer}-${eventId}-summary`;
+
+        let message = await cache.getOrSet(cacheKey, async () => {
+            let stats = await getStats(organizer, eventId, "overall");
+            let settings = await adminService.getPublicSettings(organizer, eventId);
+            let title = settings.title || `${organizer} - ${eventId}`;
+            let body = "";
+            if (stats.teams) {
+                let message = stats.teams.map(team => `${team.name} ${team.overall_stats.score}`)
+                body =  message.join(", ");
+            }
+
+            return `--- ${title} --- ${body} -- (after ${stats.total} games)`;
+        }, 1)
+
+        res.send(message);
+    })
+
     app.get("/stats/:organizer/:eventId/:game", async (req, res) => {
         const {
             organizer,
@@ -105,30 +149,10 @@ module.exports = function router(app) {
         } = req.params;
         const cacheKey = `stats:${organizer}-${eventId}-${game}`;
 
-        let cachedStats = await cache.get(cacheKey);
+        let stats = await cache.getOrSet(cacheKey, async () => {
+            return await getStats(organizer, eventId, game);
+        }, 300)
 
-        if (cachedStats) {
-            return res.send(cachedStats);
-        }
-
-        let orgId = await authService.getOrganizerId(organizer)
-        let stats = await statsService.getStats(orgId, eventId, game);
-
-        if (!stats || stats.length == 0) {
-            return res.send({});
-        }
-
-        if (game == "overall") {
-            stats = {
-                total: stats.length,
-                games: stats,
-                teams: apexService.generateOverallStats(stats),
-            }
-        } else {
-            stats = stats[0];
-        }
-
-        cache.put(cacheKey, stats, 300); //cache for 5m
         res.send(stats);
     })
 
@@ -177,6 +201,7 @@ module.exports = function router(app) {
         const url = req.query.url;
         console.log("url", url);
         let hash = await shortLinkService.getHash(url);
+        console.log("hash", hash);
 
         if (!hash) {
             hash = await shortLinkService.createShortLink(url);
@@ -197,6 +222,6 @@ module.exports = function router(app) {
         } else {
             res.sendStats(404);
         }
-
     })
+
 }

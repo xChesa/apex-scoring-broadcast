@@ -19,10 +19,10 @@ function getCacheKey(hash) {
 
 async function getHash(url) {
     console.log(url);
-    let hash = cache.get(getCacheKey(url));
+    let hash = await cache.get(getCacheKey(url));
 
     if (!hash) {
-        let result = db("short_link").where({ url }).first("hash");
+        let result = await db("short_link").where({ url }).first("hash");
         if (result) {
             hash = result.hash;
             await cache.put(getCacheKey(hash), url, 300);

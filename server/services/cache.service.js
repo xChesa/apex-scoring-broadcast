@@ -19,7 +19,20 @@ async function get(key) {
     if (result) {
         return JSON.parse(result)
     }
-    return undefined;
+}
+
+async function getOrSet(key, func, time) {
+    let result = await get(key);
+    if (result) {
+        return result;
+    }
+    
+    result = await func();
+ 
+    if (result) {
+        await put(key, result, time);
+    }
+    return result;
 }
 
 async function del(key) {
@@ -31,5 +44,6 @@ async function del(key) {
 module.exports = {
     put,
     get,
-    del
+    del,
+    getOrSet
 }

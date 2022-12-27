@@ -1,0 +1,6 @@
+{
+    "api" :{
+        "baseUrl": "http://localhost:3000/",
+        "fullUrl": "http://localhost:3000/"
+    }
+}

@@ -88,6 +88,7 @@ function apexService(config) {
     }
 
     return {
+        config,
         getStats,
         generateStats,
         getBroadcastSettings,
