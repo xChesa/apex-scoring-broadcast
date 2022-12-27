@@ -136,7 +136,7 @@ module.exports = function router(app) {
             }
 
             return `--- ${title} --- ${body} -- (after ${stats.total} games)`;
-        }, 1)
+        }, 20)
 
         res.send(message);
     })
