@@ -66,10 +66,10 @@ export default {
             return `$(urlfetch ${this.summaryUrl}) -- ${this.publicUrl}`;
         },
         SECommand() {
-            return `!command ${this.add} ${this.command} ${this.rawCommand}}`;
+            return `!command ${this.add} ${this.command} ${this.rawCommand}`;
         },
         nightbotCommand() {
-            return `!commands ${this.add} ${this.command} ${this.rawCommand}}`;
+            return `!commands ${this.add} ${this.command} ${this.rawCommand}`;
         },
 
     },

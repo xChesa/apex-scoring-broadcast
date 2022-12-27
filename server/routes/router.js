@@ -14,6 +14,7 @@ module.exports = function router(app) {
     async function deleteCache(username, eventId, game) {
         await cache.del(`stats:${username}-${eventId}-${game}`);
         await cache.del(`stats:${username}-${eventId}-overall`);
+        await cache.del(`stats:${username}-${eventId}-summary`);
     }
 
     async function getStats(organizer, eventId, game) {
@@ -127,18 +128,18 @@ module.exports = function router(app) {
 
         let message = await cache.getOrSet(cacheKey, async () => {
             let stats = await getStats(organizer, eventId, "overall");
-            let settings = await adminService.getPublicSettings(organizer, eventId);
-            let title = settings.title || `${organizer} - ${eventId}`;
             let body = "";
             if (stats.teams) {
                 let message = stats.teams.map(team => `${team.name} ${team.overall_stats.score}`)
                 body =  message.join(", ");
             }
+            return `${body} -- (after ${stats.total} games)`;
+        }, 300)
 
-            return `--- ${title} --- ${body} -- (after ${stats.total} games)`;
-        }, 20)
+        let settings = await adminService.getPublicSettings(organizer, eventId);
+        let title = settings.title || `${organizer} - ${eventId}`;
 
-        res.send(message);
+        res.send(`--- ${title} --- ${message}`);
     })
 
     app.get("/stats/:organizer/:eventId/:game", async (req, res) => {
