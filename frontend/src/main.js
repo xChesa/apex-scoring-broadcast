@@ -3,12 +3,11 @@ import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import apex from "./plugins/apex";
+import config from "./config/config.json";
 
 Vue.config.productionTip = false
 
-Vue.use(apex, {
-  baseUrl: "http://localhost:3000/",
-})
+Vue.use(apex, config.api);
 
 new Vue({
   router,

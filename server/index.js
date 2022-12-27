@@ -5,27 +5,37 @@ const cors = require("cors");
 const history = require('connect-history-api-fallback');
 const app = express()
 const port = 3000;
+const {db} = require("./connectors/db");
+const redis = require("./connectors/redis");
 
-// middleware
-app.use(express.json());
-app.use(cors());
+(async () => {
+    if (!await redis.isConnected()) {
+        console.error("Could not connect to redis");
+        return;
+    }
+    db.migrate.latest();
 
-router(app);
+    // middleware
+    app.use(express.json());
+    app.use(cors());
 
-process.on('uncaughtException', function (err) {
-    console.log(err);
-})
+    router(app);
 
-const staticFileMiddleware = express.static('dist');
+    const staticFileMiddleware = express.static('dist');
 
-app.use(staticFileMiddleware);
+    app.use(staticFileMiddleware);
 
-app.use(history({
-    index: 'index.html'
-}));
+    app.use(history({
+        index: 'index.html'
+    }));
 
-app.use(staticFileMiddleware);
+    app.use(staticFileMiddleware);
 
-app.listen(port, () => {
-    console.log(`Your app is running at http://localhost:${port}`)
-})
+    app.listen(port, () => {
+        console.log(`Your app is running at http://localhost:${port}`)
+    })
+
+    process.on('uncaughtException', function (err) {
+        console.log(err);
+    })
+})();

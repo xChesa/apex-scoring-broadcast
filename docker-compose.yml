@@ -1,0 +1,59 @@
+services:
+  nginx:
+      build:
+        context: .
+      ports:
+        - 80:80
+        - 443:443
+      restart: unless-stopped
+      volumes: 
+        - ./certbot/www:/var/www/certbot/:ro
+        - ./certbot/conf/:/etc/nginx/ssl/:ro
+      networks: 
+        - public
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+  backend:
+      depends_on:
+        - nginx
+        - postgres
+        - redis
+      build: 
+        context: ./server
+      expose:
+        - 3000
+      restart: unless-stopped
+      networks: 
+        - private
+        - public
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespw
+      - POSTGRES_DB=apex
+    expose:
+      - 5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks: 
+      - private
+  redis:
+    image: redis:6.2-alpine
+    restart: unless-stopped
+    expose:
+      - 6379
+    networks: 
+      - private
+
+networks:
+  public: 
+    driver: bridge
+  private:
+
+volumes:
+  data:
