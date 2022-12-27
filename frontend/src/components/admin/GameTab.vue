@@ -5,7 +5,7 @@
 			<v-card>
 				<v-card-title>Apex Scoring</v-card-title>
 				<v-card-text>
-					<v-combobox v-model="game" label="Game" :items="[1, 2, 3, 4, 5, 6]"></v-combobox>
+					<v-combobox v-model="game" label="Game" :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"></v-combobox>
 					<v-text-field v-model="statsCode" label="Apex Stats Code"></v-text-field>
 					<v-expansion-panels>
 						<v-expansion-panel>
