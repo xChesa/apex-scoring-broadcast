@@ -137,7 +137,7 @@ module.exports = function router(app) {
         }, 300)
 
         let settings = await adminService.getPublicSettings(organizer, eventId);
-        let title = settings.title || `${organizer} - ${eventId}`;
+        let title = (settings && settings.title) || `${organizer} - ${eventId}`;
 
         res.send(`--- ${title} --- ${message}`);
     })
