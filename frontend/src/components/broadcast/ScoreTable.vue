@@ -26,11 +26,7 @@
                 <div class="team-name" :class="{ 'team-name-override': score.name.length > 14 }"> {{ score.name }} </div>
                 <template v-if="showCharacters">
                 <div class="character-wrap score-item" :class="{ 'character-wrap-styled': styled }" v-if="mode == 'team'">
-                  <!-- <div class="character-inline-block" v-for="character in getCharacters(score.name)" :key="character"> -->
-                    <!-- <div class="character"> -->
                       <img class="team-character" v-for="character in getCharacters(score.teamId)" :key="character" height="26" :src="'/legend_icons/' + character + '.webp'">
-                    <!-- </div> -->
-                  <!-- </div> -->
                 </div>
                 </template>
               </div>
