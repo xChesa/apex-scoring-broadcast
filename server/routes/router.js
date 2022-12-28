@@ -231,7 +231,7 @@ module.exports = function router(app) {
             await shortLinkService.incrementVisit(hash);
             res.redirect(url);  
         } else {
-            res.sendStats(404);
+            res.sendStatus(404);
         }
     })
 
