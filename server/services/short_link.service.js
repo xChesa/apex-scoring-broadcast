@@ -43,10 +43,10 @@ async function createShortLink(url) {
 }
 
 async function getUrl(hash) {
-    let url = cache.get(getCacheKey(hash));
+    let url = await cache.get(getCacheKey(hash));
 
     if (!url) {
-        let result = db("short_link").where({ hash }).first("url");
+        let result = await db("short_link").where({ hash }).first("url");
         if (result) {
             url = result.url;
             await cache.put(getCacheKey(hash), url, 300);
