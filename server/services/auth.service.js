@@ -1,5 +1,16 @@
 const { db } = require("../connectors/db");
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+
+function generateKey() {
+    let randomString = '';
+
+    for (let i = 0; i < 32; i++) {
+        randomString += characters[Math.floor(Math.random() * characters.length)];
+    }
+
+    return randomString;
+}
 
 async function getOrganizer(username, key) {
     if (!username || !key) {
@@ -14,7 +25,14 @@ async function getOrganizerId(username) {
     return result.id;
 }
 
+async function createOrganizer(username) {
+    let key = generateKey();
+    await db("organizers").insert({ username, key })
+    return { username, key };
+}
+
 module.exports = {
     getOrganizer,
     getOrganizerId,
+    createOrganizer
 }

@@ -1,4 +1,5 @@
 const auth = require("../services/auth.service")
+const config = require("../config/config.json")
 
 async function verifyOrganizerHeaders(req, res, next) {
     let username = req.header("x-organizer-name");
@@ -15,6 +16,17 @@ async function verifyOrganizerHeaders(req, res, next) {
     }
 }
 
+async function verifyAdminHeaders(req, res, next) {
+    let adminKey = req.header("x-admin-key");
+
+    if (adminKey === config.adminKey) {
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
 module.exports = {
     verifyOrganizerHeaders,
+    verifyAdminHeaders,
 }

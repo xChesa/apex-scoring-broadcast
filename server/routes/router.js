@@ -2,7 +2,7 @@
 const statsService = require("../services/stats.service")
 const config = require("../config/config.json")
 config.statsUrl = process.argv[2] || config.statsUrl;
-const { verifyOrganizerHeaders } = require("../middleware/auth");
+const { verifyOrganizerHeaders, verifyAdminHeaders } = require("../middleware/auth");
 const apexService = new require("../services/apex.service")(config);
 const authService = require("../services/auth.service");
 const adminService = require("../services/admin.service");
@@ -52,6 +52,16 @@ module.exports = function router(app) {
         res.send({
             valid: organizer != undefined
         })
+    })
+
+    app.post("/auth/create", verifyAdminHeaders, async (req, res) => {
+        const {
+            username
+        } = req.body;
+
+        let organizer = await authService.createOrganizer(username);
+
+        res.send(organizer);
     })
 
     app.post("/settings/broadcast/:organizer/:eventId", verifyOrganizerHeaders, (req, res) => {

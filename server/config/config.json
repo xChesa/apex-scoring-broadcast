@@ -1,6 +1,7 @@
 {
     "statsPath": "./stats",
     "statsUrl": "http://localhost:3000/mock?=",
+    "adminKey": "key",
     "db": {
         "client": "pg",
         "connection": {
