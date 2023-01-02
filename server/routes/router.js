@@ -38,7 +38,7 @@ module.exports = function router(app) {
     }
 
     app.get("/mock", (req, res) => {
-        const mockStats = require("../mock/eastats3.json")
+        const mockStats = require("../mock/eastats4.json")
         res.json(mockStats)
     })
 

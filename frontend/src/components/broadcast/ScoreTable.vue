@@ -62,13 +62,17 @@ const pad_array = function (arr, len, fill) {
   return arr.concat(Array(len).fill(fill)).slice(0, len);
 };
 
+const defScore = {
+  name: ""
+}
+
 export default {
   props: ["stats", "display", "display2", "styled", "mode", "showCharacters"],
   computed: {
     sortedScores() {
       let scores = sortScores(this.scoresByMode, this.display);
       
-      scores = scores.length < 20 ? pad_array(this.scores, 20, {}) : scores;
+      scores = scores.length < 20 ? pad_array(scores, 20, defScore) : scores;
 
       scores.forEach((score, index) => {
         if (score.name || score.name) score.index = index + 1;

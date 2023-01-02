@@ -90,18 +90,7 @@ module.exports = function Apex(config) {
         });
 
         overall.forEach((obj, index) => obj.overall_stats.position = index + 1)
-        for (let i = 0; i < 20; i++) {
-            if (!overall[i]) overall[i] = {
-                overall_stats: {
-                    position: "",
-                    teamName: "",
-                    score: "",
-                    kills: "",
-                },
-                player_stats: [],
-                teamId: i,
-            }
-        }
+
         return overall;
     }
 
