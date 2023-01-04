@@ -1,7 +1,7 @@
 <template>
     <div class="chart-wrapper">
         <div v-if="stats && stats.games">
-            <v-btn block text @click="stacked = !stacked">{{ stacked ? 'Stacked' : 'Seperated' }}</v-btn>
+            <v-btn block text @click="stacked = !stacked">{{ stacked ? 'Seperate Axis' : 'Stacked' }}</v-btn>
             <component :is="chartType" :options="chartOptions" :data="{ labels, datasets }"></component>
         </div>
     </div>

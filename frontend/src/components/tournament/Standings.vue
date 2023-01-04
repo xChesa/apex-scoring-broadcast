@@ -22,7 +22,7 @@
                             <div v-for="g in gameList" :class="{ 'selected-game': g.game == game }" class="game-select pa-2"
                                 @click="setGame(g.game)" :key="g.id">
                                 <div class="game">Game {{ g.game }}</div>
-                                <div class="map">{{ $apex.getMapNameShort(g.map_name) }}</div>
+                                <div class="map">{{ getMapNameShort(g.map_name) }}</div>
                                 <div class="date sub">{{ getDate(g.match_start * 1000) }} {{ getTime(g.match_start * 1000) }}</div>
                             </div>
                         </div>
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { getMapNameShort } from '../../utils/statsUtils';
 
 export default {
     props: ["organizer", "eventId", "game"],
@@ -48,6 +49,7 @@ export default {
         }
     },
     methods: {
+        getMapNameShort,
         async updateStats() {
             this.gameList = await this.$apex.getGameList(this.organizer, this.eventId);
             this.stats = await this.$apex.getStats(this.organizer, this.eventId, this.game);

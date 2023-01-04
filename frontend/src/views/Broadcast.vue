@@ -11,7 +11,7 @@
                 :game="displayOptions.game" :display="displayOptions.display" :display2="displayOptions.display2"
                 :dark="displayOptions.dark" :header="displayOptions.header" :stats="stats"/>
         </div>
-        <div class="credit" :class="{ dark: displayOptions.dark }">@Double0negative</div>
+        <div class="credit" :class="{ dark: displayOptions.dark }">overstat.gg</div>
     </div>
 </template>
 

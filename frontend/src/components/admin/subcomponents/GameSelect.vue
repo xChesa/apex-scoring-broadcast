@@ -1,7 +1,7 @@
 <template>
     <v-card @click="$emit('click')" outlined class="ma-3 pointer" :class="{selected}">
         <v-card-title>
-            {{$apex.getMapName(game.map_name)}}
+            {{getMapName(game.map_name)}}
         </v-card-title>
         <v-card-subtitle>
             {{new Date(game.match_start * 1000)}}
@@ -17,8 +17,11 @@
 </template>
 
 <script>
+import { getMapName } from '../../../utils/statsUtils';
+
 export default {
-    props: ["game", "selected"]
+    props: ["game", "selected"],
+    methods: {getMapName}
 }
 </script>
 

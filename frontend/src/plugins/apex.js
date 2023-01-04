@@ -1,21 +1,5 @@
 import axios from "axios";
 
-const mapMap = {
-    "mp_rr_canyonlands_hu": "Kings Canyon (Season 14)",
-    "mp_rr_tropic_island_mu1": "Storm Point (Season 13)",
-    "mp_rr_desertlands_mu3": "Worlds Edge (Season 10)",
-    "mp_rr_olympus_mu2": "Olympus (Season 12)",
-    "mp_rr_divided_moon": "Broken Moon (Season 15)"
-}
-
-const mapMapShort = {
-    "mp_rr_canyonlands_hu": "Kings Canyon",
-    "mp_rr_tropic_island_mu1": "Storm Point",
-    "mp_rr_desertlands_mu3": "Worlds Edge",
-    "mp_rr_olympus_mu2": "Olympus",
-    "mp_rr_divided_moon": "Broken Moon"
-}
-
 export default {
     install(Vue, options) {
         Vue.prototype.$apex = apexService(options);
@@ -90,13 +74,6 @@ function apexService(config) {
         return data.data;
     } 
 
-    function getMapName(mapid) {
-        return mapMap[mapid] || mapid;
-    }
-
-    function getMapNameShort(mapid) {
-        return mapMapShort[mapid] || mapid;
-    }
 
     return {
         config,
@@ -106,13 +83,11 @@ function apexService(config) {
         setBroadcastSettings,
         getPublicSettings,
         setPublicSettings,
-        getMapName,
         getStatsFromCode,
         checkApiKey,
         getGameList,
         deleteStats,
         getLatest,
         getShortLink,
-        getMapNameShort,
     }
 }

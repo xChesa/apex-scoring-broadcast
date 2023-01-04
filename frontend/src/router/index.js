@@ -14,7 +14,8 @@ import PlayerStandings from "../components/tournament/standings/PlayerStandings"
 
 import StatsCumulativeCharts from "../components/tournament/stats/CumulativeCharts";
 import StatsGameCharts from "../components/tournament/stats/GameCharts";
-import StatsPointRatioCharts from "../components/tournament/stats/PointRatioChart";
+import StatsPointRatioCharts from "../components/tournament/stats/PointRatio";
+import StatsPickRate from "../components/tournament/stats/PickRate";
 
 Vue.use(VueRouter)
 
@@ -93,6 +94,12 @@ const routes = [
             path: "point-ratio",
             name: "tournament.stats.point-ratio",
             component: StatsPointRatioCharts,
+            props: true,
+          },
+          {
+            path: "pick-rate",
+            name: "tournament.stats.pick-rate",
+            component: StatsPickRate,
             props: true,
           }
         ]
