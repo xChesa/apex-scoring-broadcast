@@ -20,7 +20,7 @@
                                 <div class="team-name"> {{ team.name }}</div>
                                 <div class="team-score"> {{ team.score }}</div>
                             </div>
-                            <div class="view-more"><router-link :to="{ name: 'standings', params: { eventId: match.eventId, organizer: match.organizer, game: 'overall' }}">View More</router-link></div>
+                            <div class="view-more"><router-link :to="{ name: 'tournament.standings', params: { eventId: match.eventId, organizer: match.organizer, game: 'overall' }}">View More</router-link></div>
                         </div>
                     </v-col>
                 </v-row>

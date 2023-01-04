@@ -14,10 +14,11 @@ module.exports = function router(app) {
     async function deleteCache(username, eventId, game) {
         await cache.del(`stats:${username}-${eventId}-${game}`);
         await cache.del(`stats:${username}-${eventId}-overall`);
+        await cache.del(`stats:${username}-${eventId}-stacked`);
         await cache.del(`stats:${username}-${eventId}-summary`);
     }
 
-    async function getStats(organizer, eventId, game) {
+    async function getStats(organizer, eventId, game, stacked = false) {
         let orgId = await authService.getOrganizerId(organizer)
         let stats = await statsService.getStats(orgId, eventId, game);
 
@@ -25,11 +26,12 @@ module.exports = function router(app) {
             return {};
         }
 
-        if (game == "overall") {
+        if (game == "overall" || stacked) {
             stats = {
                 total: stats.length,
                 games: stats,
                 teams: apexService.generateOverallStats(stats),
+                stacked: stacked ? stats.map((_, index) => apexService.generateOverallStats(stats.slice(0, index + 1))): undefined
             }
         } else {
             stats = stats[0];
@@ -150,6 +152,20 @@ module.exports = function router(app) {
         let title = (settings && settings.title) || `${organizer} - ${eventId}`;
 
         res.send(`--- ${title} --- ${message}`);
+    })
+
+    app.get("/stats/:organizer/:eventId/stacked", async (req, res) => {
+        const {
+            organizer,
+            eventId,
+        } = req.params;
+        const cacheKey = `stats:${organizer}-${eventId}-stacked`;
+
+        let stats = await cache.getOrSet(cacheKey, async () => {
+            return await getStats(organizer, eventId, "overall", true);
+        }, 300)
+
+        res.send(stats);
     })
 
     app.get("/stats/:organizer/:eventId/:game", async (req, res) => {
