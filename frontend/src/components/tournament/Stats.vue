@@ -5,9 +5,12 @@
             <v-toolbar class="text-center">
                 <div class="toolbar-link-container">
                     <router-link class="toolbar-link"
+                        :to="{ name: 'tournament.stats.point-ratio', params: $props }">Point Ratio</router-link>
+                    <router-link class="toolbar-link"
                         :to="{ name: 'tournament.stats.charts', params: $props }">Cumulative Charts</router-link>
                     <router-link class="toolbar-link"
                         :to="{ name: 'tournament.stats.game-charts', params: $props }">Game Charts</router-link>
+                   
 
                 </div>
             </v-toolbar>

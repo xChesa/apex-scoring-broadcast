@@ -14,6 +14,7 @@ import PlayerStandings from "../components/tournament/standings/PlayerStandings"
 
 import StatsCumulativeCharts from "../components/tournament/stats/CumulativeCharts";
 import StatsGameCharts from "../components/tournament/stats/GameCharts";
+import StatsPointRatioCharts from "../components/tournament/stats/PointRatioChart";
 
 Vue.use(VueRouter)
 
@@ -74,7 +75,7 @@ const routes = [
         name: "tournament.stats",
         component: Stats,
         props: true,
-        redirect: { name: "tournament.stats.charts"},
+        redirect: { name: "tournament.stats.point-ratio"},
         children: [
           {
             path: "charts",
@@ -86,6 +87,12 @@ const routes = [
             path: "game-charts",
             name: "tournament.stats.game-charts",
             component: StatsGameCharts,
+            props: true,
+          },
+          {
+            path: "point-ratio",
+            name: "tournament.stats.point-ratio",
+            component: StatsPointRatioCharts,
             props: true,
           }
         ]

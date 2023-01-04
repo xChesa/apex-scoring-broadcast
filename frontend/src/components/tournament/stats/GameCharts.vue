@@ -50,6 +50,7 @@ export default {
                     label: team.name,
                     borderColor: colors[`${team.id}`],
                     backgroundColor: colors[`${team.id}`],
+                    borderSize: 2,
                     data: _(gamesByTeam).map(game => game[`${team.id}`].overall_stats.score).value()
                 }))
             } else {
