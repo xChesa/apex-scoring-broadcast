@@ -5,11 +5,12 @@
             <div class="public-header">
                 <div class="title">{{title}}</div>
             </div>
-            <!-- <v-toolbar class="text-center">
+            <v-toolbar class="text-center">
                 <div class="toolbar-link-container">
-                    <router-link class="toolbar-link" :to="{ name: 'leaderboard.standings', params: $props }">Standings</router-link>
+                    <router-link class="toolbar-link" :to="{ name: 'tournament.standings', params: $props }">Standings</router-link>
+                    <router-link class="toolbar-link" :to="{ name: 'tournament.stats', params: $props }">Stats</router-link>
                 </div>
-            </v-toolbar> -->
+            </v-toolbar>
 
             <router-view />
         </div>

@@ -1,0 +1,65 @@
+{
+    "matches": [
+        {
+            "match_start": 1639708337,
+            "map_name": "mp_rr_tropic_island",
+            "aim_assist_allowed": false,
+            "player_results": [
+                {
+                    "kills": 0,
+                    "characterName": "valkyrie",
+                    "revivesGiven": 0,
+                    "teamNum": 4,
+                    "playerName": "saf MattPickett",
+                    "damageDealt": 0,
+                    "teamPlacement": 3,
+                    "assists": 0,
+                    "hardware": "PC_STEAM",
+                    "survivalTime": 53,
+                    "hits": 0,
+                    "respawnsGiven": 0,
+                    "knockdowns": 0,
+                    "teamName": "Pickett",
+                    "headshots": 0,
+                    "shots": 0
+                },
+                {
+                    "kills": 2,
+                    "characterName": "loba",
+                    "revivesGiven": 0,
+                    "damageDealt": 300,
+                    "headshots": 12,
+                    "respawnsGiven": 0,
+                    "teamPlacement": 1,
+                    "shots": 49,
+                    "hardware": "PC_STEAM",
+                    "survivalTime": 69,
+                    "hits": 38,
+                    "assists": 0,
+                    "knockdowns": 2,
+                    "teamName": "DoubleO",
+                    "teamNum": 3,
+                    "playerName": "Double0negative"
+                },
+                {
+                    "kills": 0,
+                    "characterName": "loba",
+                    "playerName": "Losers Play Caustic",
+                    "teamNum": 2,
+                    "revivesGiven": 0,
+                    "survivalTime": 69,
+                    "teamPlacement": 2,
+                    "shots": 6,
+                    "hardware": "PC_STEAM",
+                    "damageDealt": 24,
+                    "respawnsGiven": 0,
+                    "hits": 4,
+                    "knockdowns": 0,
+                    "teamName": "Jevvy",
+                    "headshots": 0,
+                    "assists": 0
+                }
+            ]
+        }
+    ]
+}

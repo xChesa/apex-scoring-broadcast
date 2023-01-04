@@ -3,12 +3,19 @@ import VueRouter from 'vue-router'
 import Admin from "../views/Admin";
 import Broadcast from "../views/Broadcast";
 import Index from "../views/Index";
-import Stats from "../views/Stats";
-import Standings from "../components/stats/Standings";
+import Tournament from "../views/Tournament";
+import Standings from "../components/tournament/Standings";
+import Stats from "../components/tournament/Stats";
 
-import Scoreboard from "../components/stats/standings/Scoreboard";
-import TeamStandings from "../components/stats/standings/TeamStandings";
-import PlayerStandings from "../components/stats/standings/PlayerStandings";
+import Scoreboard from "../components/tournament/standings/Scoreboard";
+import TeamStandings from "../components/tournament/standings/TeamStandings";
+import PlayerStandings from "../components/tournament/standings/PlayerStandings";
+
+
+import StatsCumulativeCharts from "../components/tournament/stats/CumulativeCharts";
+import StatsGameCharts from "../components/tournament/stats/GameCharts";
+import StatsPointRatioCharts from "../components/tournament/stats/PointRatio";
+import StatsPickRate from "../components/tournament/stats/PickRate";
 
 Vue.use(VueRouter)
 
@@ -32,34 +39,67 @@ const routes = [
     props: true,
   },
   {
-    path: "/stats/:organizer/:eventId/",
-    name: "stats",
-    component: Stats,
+    path: "/tournament/:organizer/:eventId/",
+    name: "tournament",
+    component: Tournament,
     props: true,
     children: [
       {
         path: "standings/:game?",
-        name: "standings",
+        name: "tournament.standings",
         component: Standings,
         props: true,
-        redirect: { name: "standings.scoreboard" },
+        redirect: { name: "tournament.standings.scoreboard" },
         children: [
           {
             path: "scoreboard",
-            name: "standings.scoreboard",
+            name: "tournament.standings.scoreboard",
             component: Scoreboard,
             props: true,
           },
           {
             path: "team-standings",
-            name: "standings.team",
+            name: "tournament.standings.team",
             component: TeamStandings,
             props: true,
           },
           {
             path: "player-standings",
-            name: "standings.player",
+            name: "tournament.standings.player",
             component: PlayerStandings,
+            props: true,
+          }
+        ]
+      },
+      {
+        path: "stats",
+        name: "tournament.stats",
+        component: Stats,
+        props: true,
+        redirect: { name: "tournament.stats.point-ratio"},
+        children: [
+          {
+            path: "charts",
+            name: "tournament.stats.charts",
+            component: StatsCumulativeCharts,
+            props: true,
+          },
+          {
+            path: "game-charts",
+            name: "tournament.stats.game-charts",
+            component: StatsGameCharts,
+            props: true,
+          },
+          {
+            path: "point-ratio",
+            name: "tournament.stats.point-ratio",
+            component: StatsPointRatioCharts,
+            props: true,
+          },
+          {
+            path: "pick-rate",
+            name: "tournament.stats.pick-rate",
+            component: StatsPickRate,
             props: true,
           }
         ]
