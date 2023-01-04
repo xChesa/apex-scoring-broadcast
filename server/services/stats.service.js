@@ -15,7 +15,7 @@ function assembleStatsDocuments(games, teams, players) {
             }
         })
     });
-    return games;
+    return games.sort((a, b) => a.id - b.id);
 }
 
 async function getStats(organizer, eventId, game) {
