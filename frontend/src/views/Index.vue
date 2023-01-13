@@ -62,6 +62,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@media only screen and (max-width: 860px) {
+    .row {
+        justify-content: center;
+    }
+    .col {
+        max-width: 40vw;
+        min-width: 40vw;
+    }
+}
+
+@media only screen and (max-width: 414px) {
+    .row {
+        flex-direction: column;
+        align-items: center;
+    }
+    .col {
+        max-width: 100vw;
+    }
+}
+
 body {
     background: black;
     width: 100%;
@@ -81,7 +101,7 @@ body {
 }
 
 .top-team {
-    height: 50px;
+    height: fit-content;
     line-height: 50px;
     font-size: 1.2em;
     width: 100%;
